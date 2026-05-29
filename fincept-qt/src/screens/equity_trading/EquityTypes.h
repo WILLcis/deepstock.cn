@@ -41,10 +41,10 @@ inline constexpr int CLOCK_UPDATE_MS = 1000;
 // These are inline functions so they reflect the active theme at call time.
 
 inline QColor COLOR_BUY() {
-    return QColor(fincept::ui::ThemeManager::instance().tokens().positive);
+    return QColor(fincept::ui::ThemeManager::instance().tokens().negative);
 }
 inline QColor COLOR_SELL() {
-    return QColor(fincept::ui::ThemeManager::instance().tokens().negative);
+    return QColor(fincept::ui::ThemeManager::instance().tokens().positive);
 }
 inline QColor COLOR_DIM() {
     return QColor(fincept::ui::ThemeManager::instance().tokens().text_secondary);

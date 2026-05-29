@@ -64,6 +64,16 @@ using namespace fincept::screens::equity;
 
 static const QString TAG = "EquityTrading";
 
+static QString exchange_display_name(const QString& exchange) {
+    if (exchange == "SSE")
+        return QString::fromUtf8("上交所");
+    if (exchange == "SZSE")
+        return QString::fromUtf8("深交所");
+    if (exchange == "BSE-CN")
+        return QString::fromUtf8("北交所");
+    return exchange;
+}
+
 // ============================================================================
 // Constructor / Destructor
 // ============================================================================
@@ -197,6 +207,20 @@ void EquityTradingScreen::setup_ui() {
     cmd_layout->setContentsMargins(8, 0, 8, 0);
     cmd_layout->setSpacing(6);
 
+    auto* brand_badge = new QLabel("D");
+    brand_badge->setObjectName("eqBrandBadge");
+    brand_badge->setFixedSize(22, 22);
+    brand_badge->setAlignment(Qt::AlignCenter);
+    cmd_layout->addWidget(brand_badge);
+
+    auto* terminal_title = new QLabel(QString::fromUtf8("deepstock A股交易台"));
+    terminal_title->setObjectName("eqCommandBarTitle");
+    cmd_layout->addWidget(terminal_title);
+
+    auto* title_sep = new QLabel("|");
+    title_sep->setObjectName("eqCommandBarSep");
+    cmd_layout->addWidget(title_sep);
+
     // Account button + menu (replaces broker_btn_)
     account_btn_ = new QPushButton(QString::fromUtf8("模拟账户"));
     account_btn_->setObjectName("eqBrokerBtn");
@@ -212,7 +236,7 @@ void EquityTradingScreen::setup_ui() {
     cmd_layout->addWidget(sep);
 
     // Exchange label
-    exchange_label_ = new QLabel("SSE");
+    exchange_label_ = new QLabel(QString::fromUtf8("上交所"));
     exchange_label_->setObjectName("eqExchangeLabel");
     cmd_layout->addWidget(exchange_label_);
 
@@ -546,13 +570,13 @@ void EquityTradingScreen::update_connection_status() {
         conn_label_->setText(QString::fromUtf8("○ 未连接券商"));
         conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::TEXT_TERTIARY()));
     } else if (connected == accounts.size()) {
-        conn_label_->setText(QString("● %1/%2 CONNECTED").arg(connected).arg(accounts.size()));
+        conn_label_->setText(QString::fromUtf8("● %1/%2 已连接").arg(connected).arg(accounts.size()));
         conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::POSITIVE()));
     } else if (connected > 0) {
-        conn_label_->setText(QString("◐ %1/%2 CONNECTED").arg(connected).arg(accounts.size()));
+        conn_label_->setText(QString::fromUtf8("◐ %1/%2 部分连接").arg(connected).arg(accounts.size()));
         conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::WARNING()));
     } else {
-        conn_label_->setText(QString("○ 0/%1 CONNECTED").arg(accounts.size()));
+        conn_label_->setText(QString::fromUtf8("○ 0/%1 未连接").arg(accounts.size()));
         conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::TEXT_TERTIARY()));
     }
 }
@@ -709,7 +733,7 @@ void EquityTradingScreen::on_account_changed(const QString& account_id) {
     order_entry_->set_mode(!is_live);
     bottom_panel_->set_mode(!is_live);
 
-    exchange_label_->setText(selected_exchange_);
+    exchange_label_->setText(exchange_display_name(selected_exchange_));
     symbol_input_->setText(selected_symbol_);
     watchlist_->set_symbols(watchlist_symbols_);
     ticker_bar_->set_symbol(selected_symbol_);

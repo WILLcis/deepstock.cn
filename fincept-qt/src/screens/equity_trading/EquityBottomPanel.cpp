@@ -15,6 +15,47 @@
 
 namespace fincept::screens::equity {
 
+namespace {
+QString cn_side(QString side) {
+    side = side.trimmed().toLower();
+    if (side == "buy" || side == "long")
+        return QString::fromUtf8("买入");
+    if (side == "sell" || side == "short")
+        return QString::fromUtf8("卖出");
+    return side.toUpper();
+}
+
+QString cn_order_type(QString type) {
+    type = type.trimmed().toLower();
+    if (type == "market")
+        return QString::fromUtf8("市价");
+    if (type == "limit")
+        return QString::fromUtf8("限价");
+    if (type == "stop" || type == "stop_loss")
+        return QString::fromUtf8("止损");
+    if (type == "stop_limit" || type == "stop_loss_limit")
+        return QString::fromUtf8("止损限价");
+    return type.toUpper();
+}
+
+QString cn_order_status(QString status) {
+    status = status.trimmed().toLower();
+    if (status == "pending" || status == "new" || status == "pending_new")
+        return QString::fromUtf8("待报");
+    if (status == "accepted")
+        return QString::fromUtf8("已受理");
+    if (status == "filled")
+        return QString::fromUtf8("已成交");
+    if (status == "partially_filled")
+        return QString::fromUtf8("部分成交");
+    if (status == "cancelled" || status == "canceled")
+        return QString::fromUtf8("已撤单");
+    if (status == "rejected")
+        return QString::fromUtf8("已拒绝");
+    return status.toUpper();
+}
+} // namespace
+
 EquityBottomPanel::EquityBottomPanel(QWidget* parent) : QWidget(parent) {
     setObjectName("eqBottomPanel");
 
@@ -237,7 +278,7 @@ void EquityBottomPanel::set_paper_positions(const QVector<trading::PtPosition>& 
         const auto& p = positions[i];
         ensure_item(positions_table_, i, 0)->setText(p.symbol);
         ensure_item(positions_table_, i, 1)->setText("--");
-        ensure_item(positions_table_, i, 2)->setText(p.side);
+        ensure_item(positions_table_, i, 2)->setText(cn_side(p.side));
         ensure_item(positions_table_, i, 3)->setText(QString::number(p.quantity, 'f', 0));
         ensure_item(positions_table_, i, 4)->setText(QString::number(p.entry_price, 'f', 2));
         ensure_item(positions_table_, i, 5)->setText(QString::number(p.current_price, 'f', 2));
@@ -255,11 +296,11 @@ void EquityBottomPanel::set_paper_orders(const QVector<trading::PtOrder>& orders
         const auto& o = orders[i];
         ensure_item(orders_table_, i, 0)->setText(o.id.left(8));
         ensure_item(orders_table_, i, 1)->setText(o.symbol);
-        ensure_item(orders_table_, i, 2)->setText(o.side.toUpper());
-        ensure_item(orders_table_, i, 3)->setText(o.order_type.toUpper());
+        ensure_item(orders_table_, i, 2)->setText(cn_side(o.side));
+        ensure_item(orders_table_, i, 3)->setText(cn_order_type(o.order_type));
         ensure_item(orders_table_, i, 4)->setText(QString::number(o.quantity, 'f', 0));
-        ensure_item(orders_table_, i, 5)->setText(o.price ? QString::number(*o.price, 'f', 2) : "MKT");
-        ensure_item(orders_table_, i, 6)->setText(o.status.toUpper());
+        ensure_item(orders_table_, i, 5)->setText(o.price ? QString::number(*o.price, 'f', 2) : QString::fromUtf8("市价"));
+        ensure_item(orders_table_, i, 6)->setText(cn_order_status(o.status));
         ensure_item(orders_table_, i, 7)->setText(o.created_at);
         ensure_item(orders_table_, i, 8)->setText("");
     }
@@ -285,8 +326,8 @@ void EquityBottomPanel::set_paper_trades(const QVector<trading::PtTrade>& trades
         const int row = base + 1 + i;
         ensure_item(orders_table_, row, 0)->setText(t.id.left(8));
         ensure_item(orders_table_, row, 1)->setText(t.symbol);
-        ensure_item(orders_table_, row, 2)->setText(t.side.toUpper());
-        ensure_item(orders_table_, row, 3)->setText("TRADE");
+        ensure_item(orders_table_, row, 2)->setText(cn_side(t.side));
+        ensure_item(orders_table_, row, 3)->setText(QString::fromUtf8("成交"));
         ensure_item(orders_table_, row, 4)->setText(QString::number(t.quantity, 'f', 0));
         ensure_item(orders_table_, row, 5)->setText(QString::number(t.price, 'f', 2));
 
@@ -318,7 +359,7 @@ void EquityBottomPanel::set_positions(const QVector<trading::BrokerPosition>& po
         const auto& p = positions[i];
         ensure_item(positions_table_, i, 0)->setText(p.symbol);
         ensure_item(positions_table_, i, 1)->setText(p.exchange.isEmpty() ? "--" : p.exchange);
-        ensure_item(positions_table_, i, 2)->setText(p.side.toUpper());
+        ensure_item(positions_table_, i, 2)->setText(cn_side(p.side));
         ensure_item(positions_table_, i, 3)->setText(QString::number(p.quantity, 'f', 0));
         ensure_item(positions_table_, i, 4)->setText(QString::number(p.avg_price, 'f', 2));
         ensure_item(positions_table_, i, 5)->setText(QString::number(p.ltp, 'f', 2));
@@ -413,11 +454,11 @@ void EquityBottomPanel::set_orders(const QVector<trading::BrokerOrderInfo>& orde
         const auto& o = orders[i];
         ensure_item(orders_table_, i, 0)->setText(o.order_id.left(12));
         ensure_item(orders_table_, i, 1)->setText(o.symbol);
-        ensure_item(orders_table_, i, 2)->setText(o.side.toUpper());
-        ensure_item(orders_table_, i, 3)->setText(o.order_type.toUpper());
+        ensure_item(orders_table_, i, 2)->setText(cn_side(o.side));
+        ensure_item(orders_table_, i, 3)->setText(cn_order_type(o.order_type));
         ensure_item(orders_table_, i, 4)->setText(QString::number(o.quantity, 'f', 0));
         ensure_item(orders_table_, i, 5)->setText(QString::number(o.price, 'f', 2));
-        ensure_item(orders_table_, i, 6)->setText(o.status.toUpper());
+        ensure_item(orders_table_, i, 6)->setText(cn_order_status(o.status));
         ensure_item(orders_table_, i, 7)->setText(o.timestamp);
 
         // Action column — MODIFY button for open/pending orders

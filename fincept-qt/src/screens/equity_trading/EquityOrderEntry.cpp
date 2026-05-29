@@ -107,7 +107,7 @@ EquityOrderEntry::EquityOrderEntry(QWidget* parent) : QWidget(parent) {
 
     exchange_combo_ = new QComboBox;
     exchange_combo_->setObjectName("eqOeCombo");
-    exchange_combo_->addItems({"SSE", "SZSE", "BSE-CN", "NSE", "BSE", "NYSE", "NASDAQ"});
+    exchange_combo_->addItems({"SSE", "SZSE", "BSE-CN"});
     exchange_combo_->setFixedHeight(26);
     form->addWidget(exchange_combo_);
 
@@ -180,14 +180,14 @@ EquityOrderEntry::EquityOrderEntry(QWidget* parent) : QWidget(parent) {
     adv_layout->setContentsMargins(0, 0, 0, 0);
     adv_layout->setSpacing(4);
 
-    auto* sl_lbl = new QLabel("SL");
+    auto* sl_lbl = new QLabel(QString::fromUtf8("止损"));
     sl_lbl->setObjectName("eqOeLabel");
     sl_edit_ = new QLineEdit;
     sl_edit_->setObjectName("eqOeInput");
     sl_edit_->setPlaceholderText(QString::fromUtf8("止损价"));
     sl_edit_->setFixedHeight(26);
 
-    auto* tp_lbl = new QLabel("TP");
+    auto* tp_lbl = new QLabel(QString::fromUtf8("止盈"));
     tp_lbl->setObjectName("eqOeLabel");
     tp_edit_ = new QLineEdit;
     tp_edit_->setObjectName("eqOeInput");
@@ -228,7 +228,7 @@ EquityOrderEntry::EquityOrderEntry(QWidget* parent) : QWidget(parent) {
     connect(submit_btn_, &QPushButton::clicked, this, &EquityOrderEntry::on_submit);
     submit_row->addWidget(submit_btn_, 3);
 
-    broadcast_btn_ = new QPushButton("ALL");
+    broadcast_btn_ = new QPushButton(QString::fromUtf8("批量"));
     broadcast_btn_->setObjectName("eqBroadcastBtn");
     broadcast_btn_->setFixedHeight(34);
     broadcast_btn_->setCursor(Qt::PointingHandCursor);
@@ -499,7 +499,7 @@ void EquityOrderEntry::fetch_margin_async() {
                 if (result.success && result.data) {
                     const auto& m = *result.data;
                     const QString sym = currency_symbol(self->current_currency_);
-                    self->margin_label_->setText(QString("Margin: %1%2").arg(sym).arg(m.total, 0, 'f', 2));
+                    self->margin_label_->setText(QString::fromUtf8("保证金：%1%2").arg(sym).arg(m.total, 0, 'f', 2));
                     self->margin_label_->setStyleSheet(QString("color: %1; font-size: 10px;").arg(colors::AMBER()));
                     self->margin_label_->show();
                 } else {

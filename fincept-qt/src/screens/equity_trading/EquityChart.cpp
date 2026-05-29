@@ -74,7 +74,7 @@ void CandleCanvas::rebuild_cache() {
         // Empty state
         p.setPen(TEXT_TERTIARY());
         p.setFont(QFont("monospace", 10));
-        p.drawText(cache_.rect(), Qt::AlignCenter, "No data");
+        p.drawText(cache_.rect(), Qt::AlignCenter, QString::fromUtf8("暂无K线数据"));
         return;
     }
 
@@ -168,7 +168,7 @@ void CandleCanvas::rebuild_cache() {
         if (slot_w * LABEL_STEP > 60) {
             // enough space — pick format based on timeframe span
             qint64 span_ms = candles_.last().timestamp - candles_.first().timestamp;
-            label = span_ms > 7LL * 24 * 3600 * 1000 ? dt.toString("dd MMM") : dt.toString("HH:mm");
+            label = span_ms > 7LL * 24 * 3600 * 1000 ? dt.toString("MM-dd") : dt.toString("HH:mm");
         } else {
             label = dt.toString("HH:mm");
         }
@@ -181,7 +181,7 @@ void CandleCanvas::rebuild_cache() {
         const auto& c = candles_.last();
         QDateTime dt = QDateTime::fromMSecsSinceEpoch(c.timestamp);
         qint64 span_ms = candles_.last().timestamp - candles_.first().timestamp;
-        QString label = span_ms > 7LL * 24 * 3600 * 1000 ? dt.toString("dd MMM") : dt.toString("HH:mm");
+        QString label = span_ms > 7LL * 24 * 3600 * 1000 ? dt.toString("MM-dd") : dt.toString("HH:mm");
         int lx = static_cast<int>((count - 0.5) * slot_w);
         int tw = fm.horizontalAdvance(label);
         p.drawText(lx - tw / 2, plot_h + TIME_AXIS_H - 3, label);
@@ -205,7 +205,7 @@ EquityChart::EquityChart(QWidget* parent) : QWidget(parent) {
     h_layout->setContentsMargins(8, 0, 8, 0);
     h_layout->setSpacing(2);
 
-    auto* title = new QLabel("CHART");
+    auto* title = new QLabel(QString::fromUtf8("K线图"));
     title->setObjectName("eqChartTitle");
     h_layout->addWidget(title);
     h_layout->addStretch();

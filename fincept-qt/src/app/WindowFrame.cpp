@@ -734,7 +734,7 @@ WindowFrame::WindowFrame(int window_id, QWidget* parent) : QMainWindow(parent), 
 
     // Show the app or auth stack based on authentication state.
     // If dock layout was restored, the saved tabs are already visible.
-    // Otherwise, navigate to dashboard as default.
+    // Otherwise, navigate to the A-share trading desk as default.
     auto& auth_mgr = auth::AuthManager::instance();
     if (auth_mgr.is_authenticated() || auth_mgr.is_loading()) {
         // If user is authenticated and has a PIN, show lock screen first.
@@ -754,8 +754,8 @@ WindowFrame::WindowFrame(int window_id, QWidget* parent) : QMainWindow(parent), 
             stack_->setCurrentIndex(1);
         }
         if (!dock_restored) {
-            dock_router_->navigate("dashboard");
-            LOG_INFO("WindowFrame", "Applied clean default dock layout");
+            dock_router_->navigate("equity_trading");
+            LOG_INFO("WindowFrame", "Applied clean default A-share dock layout");
         } else {
             // Restore last-active screen as the focused tab and sync tab bar
             const QString last = SessionManager::instance().last_screen();
@@ -881,7 +881,7 @@ void WindowFrame::setup_auth_screens() {
     connect(pricing, &screens::PricingScreen::navigate_dashboard, this, [this]() {
         set_shell_visible(true);
         stack_->setCurrentIndex(1);
-        dock_router_->navigate("dashboard");
+        dock_router_->navigate("equity_trading");
     });
 
     // ── Info screen navigation ───────────────────────────────────────────────
@@ -1151,7 +1151,7 @@ void WindowFrame::on_auth_state_changed() {
                 return;
             }
 
-            // Paid user → straight to dashboard
+            // Paid user → straight to the A-share terminal
             set_shell_visible(true);
             stack_->setCurrentIndex(1);
             WorkspaceManager::instance().load_last_workspace();
@@ -1163,7 +1163,7 @@ void WindowFrame::on_auth_state_changed() {
                 services::UpdateService::instance().check_for_updates(true);
             });
             // Warm instrument cache in background — only loaded if not already cached.
-            // Runs concurrently while the user reads the dashboard (3-5s head start).
+            // Runs concurrently while the user reads the A-share desk (3-5s head start).
             fincept::trading::InstrumentService::instance().load_from_db_async("zerodha");
             fincept::trading::InstrumentService::instance().load_from_db_async("angelone");
             fincept::trading::InstrumentService::instance().load_from_db_async("groww");
@@ -1213,7 +1213,7 @@ void WindowFrame::continue_locally() {
     set_shell_visible(true);
     stack_->setCurrentIndex(1);
     WorkspaceManager::instance().load_last_workspace();
-    dock_router_->navigate("dashboard");
+    dock_router_->navigate("equity_trading");
     LOG_INFO("WindowFrame", "Continuing in local mode without account authentication");
 }
 void WindowFrame::show_pricing() {

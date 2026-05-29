@@ -18,10 +18,19 @@ TabBar::TabBar(QWidget* parent) : QWidget(parent) {
     tab_layout_->setSpacing(2);
 
     QVector<TabDef> tabs = {
-        {"dashboard", "DASHBOARD"}, {"markets", "MARKETS"},   {"crypto_trading", "CRYPTO"},  {"portfolio", "PORTFOLIO"},
-        {"news", "NEWS"},           {"ai_chat", "AI CHAT"},   {"backtesting", "BACKTEST"},   {"algo_trading", "ALGO"},
-        {"node_editor", "NODES"},   {"code_editor", "CODE"},  {"ai_quant_lab", "QUANT LAB"}, {"quantlib", "QUANTLIB"},
-        {"forum", "FORUM"},         {"settings", "SETTINGS"}, {"profile", "PROFILE"},
+        {"equity_trading", QString::fromUtf8("A股交易")},
+        {"dashboard", QString::fromUtf8("看板")},
+        {"markets", QString::fromUtf8("行情")},
+        {"watchlist", QString::fromUtf8("自选")},
+        {"portfolio", QString::fromUtf8("组合")},
+        {"news", QString::fromUtf8("资讯")},
+        {"equity_research", QString::fromUtf8("研究")},
+        {"ai_chat", QString::fromUtf8("智能体")},
+        {"forum", QString::fromUtf8("投顾社区")},
+        {"backtesting", QString::fromUtf8("回测")},
+        {"algo_trading", QString::fromUtf8("算法")},
+        {"settings", QString::fromUtf8("设置")},
+        {"profile", QString::fromUtf8("我的")},
     };
     for (const auto& def : tabs)
         add_tab(def);
