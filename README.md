@@ -1,322 +1,142 @@
-# Fincept Terminal
+# deepstock.cn
 
-<div align="center">
+`deepstock.cn` 是一个面向 A 股场景的交易终端 demo。项目基于原生 C++20、Qt6 和嵌入式 Python 构建，目标是把桌面级行情、研究、组合、风控和智能体工作流，压缩成一个适合中国股票市场的专业终端原型。
 
-[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-C06524)](https://github.com/Fincept-Corporation/FinceptTerminal/blob/main/LICENSE)
-[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus)](https://isocpp.org/)
-[![Qt6](https://img.shields.io/badge/Qt-6-41CD52?logo=qt&logoColor=white)](https://www.qt.io/)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Hits](https://hits.sh/github.com/Fincept-Corporation/FinceptTerminal.svg?label=Visits)](https://hits.sh/github.com/Fincept-Corporation/FinceptTerminal/)
+> 当前版本定位为产品 demo 与技术验证，不构成任何投资建议，也不应直接用于真实交易。
 
-<a href="https://trendshift.io/repositories/17028" target="_blank"><img src="https://trendshift.io/api/badge/repositories/17028" alt="Fincept-Corporation%2FFinceptTerminal | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+## 项目定位
 
-[![GitHub Stars](https://img.shields.io/github/stars/Fincept-Corporation/FinceptTerminal?style=social)](https://github.com/Fincept-Corporation/FinceptTerminal/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/Fincept-Corporation/FinceptTerminal?style=social)](https://github.com/Fincept-Corporation/FinceptTerminal/network/members)
-[![GitHub Watchers](https://img.shields.io/github/watchers/Fincept-Corporation/FinceptTerminal?style=social)](https://github.com/Fincept-Corporation/FinceptTerminal/watchers)
-[![GitHub Release](https://img.shields.io/github/v/release/Fincept-Corporation/FinceptTerminal?color=brightgreen&logo=github)](https://github.com/Fincept-Corporation/FinceptTerminal/releases)
-[![GitHub Issues](https://img.shields.io/github/issues/Fincept-Corporation/FinceptTerminal)](https://github.com/Fincept-Corporation/FinceptTerminal/issues)
+deepstock.cn 希望探索两类产品形态：
 
-[![X](https://img.shields.io/badge/-X-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/finceptcorp) [![Twitter](https://img.shields.io/badge/-Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/intent/tweet?text=Check%20out%20FinceptTerminal&url=https%3A//github.com/Fincept-Corporation/FinceptTerminal/) [![LinkedIn](https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/sharing/share-offsite/?url=https%3A//github.com/Fincept-Corporation/FinceptTerminal/) [![Facebook](https://img.shields.io/badge/-Facebook-1877F2?style=flat-square&logo=facebook&logoColor=white)](https://www.facebook.com/sharer/sharer.php?u=https%3A//github.com/Fincept-Corporation/FinceptTerminal/) [![Reddit](https://img.shields.io/badge/-Reddit-FF4500?style=flat-square&logo=reddit&logoColor=white)](https://www.reddit.com/r/finceptTerminal/) [![WhatsApp](https://img.shields.io/badge/-WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white)](https://api.whatsapp.com/send?text=Check%20out%20FinceptTerminal%3A%20https%3A//github.com/Fincept-Corporation/FinceptTerminal/)
+- **桌面端交易终端**：适合多屏、多窗口、多图表、盘口、委托、组合管理和研究工作流。
+- **手机端智能体助手**：适合将行情扫描、策略解释、风险计算和委托草稿压缩成一个可确认的智能体页面。
 
-### **Your Thinking is the Only Limit. The Data Isn't.**
+## 当前 Demo 能力
 
-State-of-the-art financial intelligence platform with institutional-grade financial analytics, AI automation, and unlimited data connectivity.
+| 模块 | 说明 |
+| --- | --- |
+| A 股交易工作台 | 自选股、行情条、盘口深度、K 线区域、订单面板、持仓/资金/委托标签页 |
+| 中文化前端 | 顶部导航、A 股交易入口、账户管理、批量下单、订单状态和组合导入流程已中文化 |
+| deepstock 品牌化 | 构建目标、应用标题、打包元信息、Linux desktop/appdata、安装器组件改为 deepstock |
+| 模拟交易 | 支持 paper trading 账户路径，适合演示委托生成和成交状态 |
+| 移动端 demo | `mobile-demo/index.html` 提供 A 股智能交易助理的手机页面原型 |
+| Python 数据能力 | 保留 AkShare、Yahoo Finance、研究、量化分析等脚本基础，便于继续接入 A 股数据源 |
 
-[📥 Download](https://github.com/Fincept-Corporation/FinceptTerminal/releases) · [⚖️ License](https://github.com/Fincept-Corporation/FinceptTerminal/blob/main/docs/COMMERCIAL_LICENSE.md) · [💬 Discussions](https://github.com/Fincept-Corporation/FinceptTerminal/discussions) · [💬 Discord](https://discord.gg/ae87a8ygbN) · [🤝 Partner](https://github.com/Fincept-Corporation/FinceptTerminal/blob/main/docs/COMMERCIAL_LICENSE.md)
+## 界面预览
 
-![Fincept Terminal](https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/FinceptBanner.png)
+### 手机端智能体 Demo
 
-<table>
-  <tr>
-    <td align="center" width="25%"><a href="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/EquityResearch.png"><img src="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/EquityResearch.png" width="100%"/></a><br/><sub><b>Equity Research</b></sub></td>
-    <td align="center" width="25%"><a href="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/Portfolio.png"><img src="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/Portfolio.png" width="100%"/></a><br/><sub><b>Portfolio</b></sub></td>
-    <td align="center" width="25%"><a href="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/News.png"><img src="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/News.png" width="100%"/></a><br/><sub><b>News</b></sub></td>
-    <td align="center" width="25%"><a href="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/NodeEditor.png"><img src="https://raw.githubusercontent.com/Fincept-Corporation/FinceptTerminal/main/images/NodeEditor.png" width="100%"/></a><br/><sub><b>Node Editor</b></sub></td>
-  </tr>
-</table>
+![deepstock mobile demo](demo-artifacts/screenshots/mobile-demo-view.png)
 
-</div>
+### 桌面终端素材
 
----
+![deepstock dashboard](demo-artifacts/screenshots/deepstock-terminal-dashboard.png)
 
-## About
+![deepstock equity research](demo-artifacts/screenshots/deepstock-terminal-equity-research.png)
 
-**Fincept Terminal v4** is a pure native C++20 desktop application. It uses **Qt6** for UI and rendering, embedded **Python** for analytics, and delivers Bloomberg-terminal-class performance in a single native binary.
+![deepstock portfolio](demo-artifacts/screenshots/deepstock-terminal-portfolio.png)
 
----
-
-## Features
-
-| **Feature** | **Description** |
-|-------------|-----------------|
-| 📊 **Multi-Asset Analytics** | DCF models, portfolio optimization, risk metrics (VaR, Sharpe), derivatives pricing across equity, fixed income, derivatives, portfolio, and alternatives via embedded Python |
-| 🤖 **AI Agents** | 37 agents across Trader/Investor (Buffett, Graham, Lynch, Munger, Klarman, Marks…), Economic, and Geopolitics frameworks; local LLM support; multi-provider (OpenAI, Anthropic, Gemini, Groq, DeepSeek, MiniMax, OpenRouter, Ollama) |
-| 🌐 **100+ Data Connectors** | DBnomics, Polygon, Kraken, Yahoo Finance, FRED, IMF, World Bank, AkShare, government APIs, plus optional alternative-data overlays such as Adanos market sentiment for equity research |
-| 📈 **Real-Time Trading** | Crypto (Kraken/HyperLiquid WebSocket), equity, algo trading, paper trading engine, 16 broker integrations (Zerodha, Angel One, Upstox, Fyers, Dhan, Groww, Kotak, IIFL, 5paisa, AliceBlue, Shoonya, Motilal, IBKR, Alpaca, Tradier, Saxo) |
-| 🔬 **QuantLib Suite** | 18 quantitative analysis modules — pricing, risk, stochastic, volatility, fixed income |
-| 🚢 **Global Intelligence** | Maritime tracking, geopolitical analysis, relationship mapping, satellite data |
-| 🎨 **Visual Workflows** | Node editor for automation pipelines, MCP tool integration |
-| 🧠 **AI Quant Lab** | ML models, factor discovery, HFT, reinforcement learning trading |
-
----
-
-## Installation
-
-<!-- DOWNLOAD-TABLE-START -->
-### Option 1 — Download Installer (Recommended)
-
-Latest release: **v4.0.2** — [View all releases](https://github.com/Fincept-Corporation/FinceptTerminal/releases/tag/v4.0.2)
-
-| Platform | Download | Run |
-|----------|----------|-----|
-| **Windows x64** | [FinceptTerminal-Windows-x64-setup.exe](https://github.com/Fincept-Corporation/FinceptTerminal/releases/download/v4.0.2/FinceptTerminal-4.0.2-windows-x64-setup.exe) | Run installer → launch `FinceptTerminal.exe` |
-| **Linux x64** | [FinceptTerminal-Linux-x64.run](https://github.com/Fincept-Corporation/FinceptTerminal/releases/download/v4.0.2/FinceptTerminal-4.0.2-linux-x64-setup.run) | `chmod +x` → run installer |
-| **macOS Apple Silicon** | [FinceptTerminal-macOS-arm64.dmg](https://github.com/Fincept-Corporation/FinceptTerminal/releases/download/v4.0.2/FinceptTerminal-4.0.2-macos-arm64-setup.dmg) | Open DMG → drag to Applications |
-<!-- DOWNLOAD-TABLE-END -->
-
----
-
-### Option 2 — Quick Start (One-Click Build)
-
-Clone and run the setup script — it installs all dependencies and builds the app automatically:
+## 快速体验手机端 Demo
 
 ```bash
-# Linux / macOS
-git clone https://github.com/Fincept-Corporation/FinceptTerminal.git
-cd FinceptTerminal
-chmod +x setup.sh && ./setup.sh
+cd mobile-demo
+python3 -m http.server 4177
 ```
 
-The script handles: compiler check, CMake, Qt6, Python, build, and launch.
+然后打开：
 
-> **Windows:** No setup script — use the manual build steps in Option 4 below. It's just two commands.
+```text
+http://127.0.0.1:4177/
+```
 
----
+这个页面展示了一个可交互的手机端智能体工作流：
 
-### Option 3 — Docker (CI / Developer Environments)
+- 查看核心标的行情与分时走势
+- 获取智能体交易建议
+- 查看信号评分、建议仓位、风险标签
+- 生成模拟委托草稿
+- 点击“解释依据”查看 AI 交易理由
+- 点击“确认下单”进入模拟下单状态
 
-> **Note:** Docker is intended for CI/CD testing and development environments only.
-> For the best experience, use the pre-built installers in **Option 1** above.
-> Docker requires Linux with X11. Windows and macOS are not supported.
+## 桌面端构建
+
+项目核心应用位于 `fincept-qt/`。
+
+### macOS 示例
 
 ```bash
-# Build from source (Linux + X11 required)
-git clone https://github.com/Fincept-Corporation/FinceptTerminal.git
-cd FinceptTerminal
-docker build -t fincept-terminal .
-docker run --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix fincept-terminal
+cmake -S fincept-qt -B fincept-qt/build-deepstock \
+  -DCMAKE_PREFIX_PATH="$HOME/Qt/6.8.3/macos" \
+  -DFINCEPT_ALLOW_QT_DRIFT=ON \
+  -DFINCEPT_BUILD_TESTS=OFF
+
+cmake --build fincept-qt/build-deepstock --target deepstock --parallel 4
 ```
 
----
-
-### Option 4 — Build from Source (Manual)
-
-> **Versions are pinned.** Use the exact versions below. Newer or older versions are unsupported and may fail to build or produce unstable binaries.
-
-#### Prerequisites (exact versions)
-
-| Tool | Pinned Version | Notes |
-|------|----------------|-------|
-| **Git** | latest | — |
-| **CMake** | **3.27.7** | [Download](https://cmake.org/download/) |
-| **Ninja** | **1.11.1** | [Download](https://github.com/ninja-build/ninja/releases) |
-| **C++ compiler** | **MSVC 19.38** (VS 2022 17.8) / **GCC 12.3** / **Apple Clang 15.0** (Xcode 15.2) | C++20 required |
-| **Qt** | **6.8.3** | [Qt Online Installer](https://www.qt.io/download-qt-installer) |
-| **Python** | **3.11.9** | [python.org](https://www.python.org/downloads/release/python-3119/) |
-| **Platform SDK** | Win10 SDK 10.0.22621.0 / macOS SDK 14.0 (deploy 11.0+) / glibc 2.31+ | — |
-
-#### Install Qt 6.8.3
-
-**Windows:** Qt Online Installer → select `Qt 6.8.3 > MSVC 2022 64-bit` (install path: `C:/Qt/6.8.3/msvc2022_64`)
-
-**Linux:** Qt Online Installer → `Qt 6.8.3 > Desktop gcc 64-bit` (install path: `~/Qt/6.8.3/gcc_64`). **Or** for system packages, install `qt6-base-dev qt6-charts-dev qt6-tools-dev qt6-base-private-dev libqt6websockets6-dev libgl1-mesa-dev` — note system packages may be a different 6.x minor.
-
-**macOS:** Qt Online Installer → `Qt 6.8.3 > macOS` (install path: `~/Qt/6.8.3/macos`)
-
-#### Build (using CMake presets — recommended)
+构建完成后运行：
 
 ```bash
-git clone https://github.com/Fincept-Corporation/FinceptTerminal.git
-cd FinceptTerminal/fincept-qt
+open fincept-qt/build-deepstock/deepstock.app
 ```
 
-**Step 1 — Configure** (one-time, or after `CMakeLists.txt` changes):
-```powershell
-cmake --preset win-release      # Windows (PowerShell)
-cmake --preset linux-release    # Linux
-cmake --preset macos-release    # macOS
-```
-
-**Step 2 — Compile** (run this for every code change):
-```powershell
-cmake --build --preset win-release      # Windows
-cmake --build --preset linux-release    # Linux
-cmake --build --preset macos-release    # macOS
-```
-
-Debug variants: replace `release` with `debug` (e.g. `win-debug`, `linux-debug`, `macos-debug`).
-
-> **Windows prerequisite:** The PowerShell profile at `~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1`
-> auto-initializes VS 2022 on every new terminal — open a fresh PowerShell and cmake works directly.
-
-#### Build (manual — if presets can't resolve your Qt path)
-
-```powershell
-# Windows (PowerShell)
-cmake -B build/win-release -G Ninja -DCMAKE_BUILD_TYPE=Release `
-  -DCMAKE_PREFIX_PATH="C:/Qt/6.8.3/msvc2022_64"
-cmake --build build/win-release
-```
+或者直接执行：
 
 ```bash
-# Linux
-cmake -B build/linux-release -G Ninja -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_PREFIX_PATH="$HOME/Qt/6.8.3/gcc_64"
-cmake --build build/linux-release
-
-# macOS
-cmake -B build/macos-release -G Ninja -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
-  -DCMAKE_PREFIX_PATH="$HOME/Qt/6.8.3/macos"
-cmake --build build/macos-release
+./fincept-qt/build-deepstock/deepstock.app/Contents/MacOS/deepstock
 ```
 
-#### Run
+### Windows / Linux
 
-```bash
-./build/<preset>/FinceptTerminal         # Linux / macOS (preset build)
-.\build\<preset>\FinceptTerminal.exe     # Windows (preset build)
+仍沿用 CMake + Qt6 的构建方式。需要安装：
+
+- C++20 编译器
+- CMake
+- Ninja
+- Qt 6
+- Python 3.11+
+- OpenSSL
+
+构建目标已经改为：
+
+```text
+deepstock
 ```
 
-#### Troubleshooting
+## 产品方向
 
-1. **"Could not find Qt6 6.8.3"** — verify `CMAKE_PREFIX_PATH` points to the Qt 6.8.3 install, not 6.5/6.6/6.8.
-2. **MSVC version error** — use VS 2022 17.8+ (MSVC 19.38+). Check with `cl /?`.
-3. **Need to unblock with a different Qt minor?** Pass `-DFINCEPT_ALLOW_QT_DRIFT=ON` (local testing only — never for releases or CI).
-4. Clean rebuild: delete `build/<preset>/` and re-run configure.
+deepstock.cn 后续可以沿三条路线推进：
 
----
+1. **A 股终端化**
+   - 接入 AkShare、券商交易接口、Level-2 或延迟行情源
+   - 完善 A 股代码、交易所、涨跌停、交易时段、最小成交单位等规则
+   - 强化自选股、盘口、委托、成交、资金、持仓的本土化体验
 
-## What Sets Us Apart
+2. **智能体交易助理**
+   - 把扫描、解释、风控和下单草稿交给智能体
+   - 用户只负责确认、调整和授权
+   - 所有交易建议必须展示依据、风险和有效期
 
-**Fincept Terminal** is an open-source financial platform built for those who refuse to be limited by traditional software. We compete on **analytics depth** and **data accessibility** — not on insider info or exclusive feeds.
+3. **手机端产品**
+   - 把桌面终端的复杂信息压缩成行动流
+   - 重点页面包括：智能体、行情、自选、交易、账户、风控
+   - 优先做“可解释建议 + 风险确认 + 模拟委托”
 
-Recent builds also support optional **Adanos Market Sentiment** connectivity in **Data Sources → Alternative Data**. When configured, Equity Research can surface cross-source retail sentiment snapshots across Reddit, X, finance news, and Polymarket. Without an active Adanos connection, the feature remains dormant and the rest of the app behaves exactly as before.
+## 目录结构
 
-- **Native performance** — C++20 with Qt6, no Electron/web overhead
-- **Single binary** — no Node.js, no browser runtime, no JavaScript bundler
-- **Full buy-side analyst toolkit** — equity, portfolio, derivatives, fixed income, corporate finance, alternatives
-- **100+ data connectors** — from Yahoo Finance to government databases
-- **Free & Open Source** (AGPL-3.0) with commercial licenses available
+```text
+fincept-qt/                  Qt/C++ 桌面终端主体
+mobile-demo/                 手机端智能体页面 demo
+demo-artifacts/screenshots/  截图素材
+images/                      原始终端截图素材
+docs/                        项目文档
+```
 
----
+## 重要说明
 
-## Roadmap
-
-| Timeline | Milestone |
-|----------|-----------|
-| **Shipped** | Real-time streaming, 16 broker integrations, multi-account trading, PIN authentication, theme system |
-| **Q2 2026** | Options strategy builder, multi-portfolio management, 50+ AI agents |
-| **Q3 2026** | Programmatic API, ML training UI, institutional features |
-| **Future** | Mobile companion, cloud sync, community marketplace |
-
----
-
-## Contributing
-
-We're building the future of financial analysis — together.
-
-**Contribute:** New data connectors, AI agents, analytics modules, C++ screens, documentation
-
-- [Contributing Guide](docs/CONTRIBUTING.md)
-- [C++ Contributing Guide](fincept-qt/CONTRIBUTING.md)
-- [Python Contributor Guide](docs/PYTHON_CONTRIBUTOR_GUIDE.md)
-- [Report Bug](https://github.com/Fincept-Corporation/FinceptTerminal/issues)
-- [Request Feature](https://github.com/Fincept-Corporation/FinceptTerminal/discussions)
-
----
-
-## Support the Project
-
-We've built a community token on pump.fun as a way for early believers to stand alongside Fincept Terminal's journey — from where it is today to where we're taking it.
-
-**Fincept Terminal is being built for the long haul.** We're committed to making it the go-to financial intelligence platform, and this token is a way for the community to be part of that story from the ground up.
-
-- **pump.fun:** [View Token](https://pump.fun/coin/9LUqJ5aQTjQiUCL93gi33LZcscUoSBJNhVCYpPzEpump)
-- **Solana Mint Address:** `84zrRRB7eqF3G2zhsGsD7zk922kZw3LacxhjkSHZJXwK`
-
-**What this token is:**
-- A signal of belief in Fincept Terminal's long-term vision
-- A way to be part of the community at the earliest stage
-- Planned for integration into the Fincept Terminal ecosystem as the product grows
-
-**What this token is not (today):**
-- It currently carries no in-product utility, governance rights, or revenue share
-- It is not an investment contract, and no returns are promised or implied
-
-We're thinking long-term — and we hope you are too. That said, please only participate with funds you can genuinely afford to lose. Crypto markets are volatile, and Fincept Corporation assumes no responsibility for any gains or losses from buying, selling, or holding this token.
-
-**If you believe in what we're building, holding is how you show it.**
-
----
-
-## For Universities & Educators
-
-**Bring professional-grade financial analytics to your classroom.**
-
-- **$799/month** for 20 accounts
-- Full access to Fincept Data & APIs
-- Perfect for finance, economics, and data science courses
-- Equity, portfolio, derivatives, fixed income, and economics analytics built-in
-
-**Interested?** Email **support@fincept.in** with your institution name.
-
-[University Licensing Details](https://github.com/Fincept-Corporation/FinceptTerminal/blob/main/docs/COMMERCIAL_LICENSE.md)
-
----
+- 本项目当前是 demo 级产品验证。
+- 任何智能体输出都必须经过用户确认，不能自动实盘下单。
+- A 股交易涉及合规、券商授权、资金安全和投资者适当性要求，真实产品化前需要完整风控与审计链路。
 
 ## License
 
-> ⚠️ **Cloning, forking, or modifying this repository does NOT grant commercial rights.**
-> A paid Commercial License is required for **any** business or internal company use — including forks that remove or replace Fincept's APIs with your own data sources. See **[Commercial License](https://github.com/Fincept-Corporation/FinceptTerminal/blob/main/docs/COMMERCIAL_LICENSE.md)** for binding terms.
-
-**Dual Licensed: AGPL-3.0 (Open Source) + Fincept Commercial License**
-
-| | |
-|---|---|
-| ✅ **Free under AGPL-3.0** | Personal use · Individual learning · Academic research · Open-source contributions to this repository |
-| ❌ **Commercial License required** | Any business use (paid or free) · Internal company use · Startups at any stage · Hedge funds, brokerages, banks, fintechs · SaaS / hosted offerings · White-label or reselling · Forks that strip or replace Fincept APIs · Consulting deliverables · Employee training or evaluation by for-profit entities |
-
-The license attaches to the **codebase and any Derivative Work of it**, not to specific API integrations. Substituting Fincept APIs with your own — or with any third party's — does not sever or extinguish the licensing obligation. **These terms apply to every version, branch, tag, and commit of Fincept Terminal — past, present, and future** — and remain in force indefinitely until superseded by a subsequent published version.
-
-**Trademarks.** "Fincept", "Fincept Terminal", and the Fincept logo are trademarks of Fincept Corporation. Use in any forked, derivative, rebranded, or commercial product requires prior written permission. Removal or rebranding of these marks in a fork does not extinguish the underlying licensing obligation.
-
-**Enforcement & Penalties.** Fincept Corporation actively monitors public repositories, app stores, cloud marketplaces, and SaaS platforms for unlicensed Commercial Use, and pursues DMCA takedowns, cease-and-desist notices, and civil action under Indian and international law. Unauthorized commercial use is subject to **liquidated damages starting at USD 50,000 per organization per year**, with higher amounts for unauthorized SaaS distribution, fork-and-replace deployments, and trademark misuse — in addition to backdated license fees, disgorgement of profits, and recovery of legal costs. **Joint and several liability** applies: any company that engages a third-party developer, integrator, or consultancy to build, modify, or deploy the Software is fully liable alongside that developer for any unauthorized use. Governing law: India · Exclusive jurisdiction: Delhi, India.
-
-**Contact for licensing:** support@fincept.in · Full terms: [docs/COMMERCIAL_LICENSE.md](https://github.com/Fincept-Corporation/FinceptTerminal/blob/main/docs/COMMERCIAL_LICENSE.md)
-
-© 2025–2026 Fincept Corporation. All rights reserved.
-
----
-
-<div align="center">
-
-### **Your Thinking is the Only Limit. The Data Isn't.**
-
-<div align="center">
-<a href="https://star-history.com/#Fincept-Corporation/FinceptTerminal&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Fincept-Corporation/FinceptTerminal&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Fincept-Corporation/FinceptTerminal&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Fincept-Corporation/FinceptTerminal&type=Date" />
- </picture>
-</a>
-</div>
-
-[![Repobeats](https://repobeats.axiom.co/api/embed/fincept-corporation-finceptterminal.svg "Repobeats analytics image")](https://repobeats.axiom.co)
-
-[![Email](https://img.shields.io/badge/Email-support@fincept.in-blue)](mailto:support@fincept.in)
-
-⭐ **Star** · 🔄 **Share** · 🤝 **Contribute**
-
-</div>
+本仓库保留原项目许可证文件。继续使用、分发或商业化前，请审阅 `LICENSE` 与 `docs/COMMERCIAL_LICENSE.md`。

@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>deepstock mobile agent demo</title>
+  <style>
+    :root {
+      --ink: #18212f;
+      --muted: #667085;
+      --line: #d9e0e8;
+      --panel: #ffffff;
+      --page: #eef3f8;
+      --brand: #0f766e;
+      --brand-2: #2563eb;
+      --red: #d92d20;
+      --green: #15803d;
+      --amber: #b7791f;
+      --nav: #101828;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background: radial-gradient(circle at 12% 8%, rgba(15,118,110,.14), transparent 28%),
+                  radial-gradient(circle at 86% 0%, rgba(37,99,235,.12), transparent 30%),
+                  var(--page);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .stage {
+      width: min(100%, 1100px);
+      display: grid;
+      grid-template-columns: minmax(320px, 390px) minmax(360px, 1fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    .phone {
+      width: 390px;
+      max-width: 100%;
+      height: 844px;
+      border: 10px solid #111827;
+      border-radius: 36px;
+      background: var(--page);
+      box-shadow: 0 24px 70px rgba(16,24,40,.28);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen {
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: none;
+      padding-bottom: 86px;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    .status {
+      height: 36px;
+      padding: 10px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .hero {
+      padding: 14px 18px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-row,
+    .row,
+    .tabs,
+    .chip-row,
+    .order-row,
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-row { justify-content: space-between; gap: 12px; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: 18px;
+      line-height: 1.2;
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .live {
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(21,128,61,.22);
+      color: var(--green);
+      background: rgba(21,128,61,.08);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .market-card {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfe;
+    }
+
+    .row { justify-content: space-between; gap: 8px; }
+
+    .ticker {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .price {
+      margin-top: 3px;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .change {
+      color: var(--red);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 96px;
+      margin-top: 10px;
+      display: block;
+      background: #ffffff;
+      border: 1px solid #edf1f5;
+      border-radius: 6px;
+    }
+
+    .tabs {
+      padding: 10px 18px;
+      gap: 8px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      color: #fff;
+      background: var(--nav);
+      border-color: var(--nav);
+    }
+
+    .section {
+      padding: 12px 14px 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 6px 18px rgba(16,24,40,.05);
+    }
+
+    .card + .card { margin-top: 10px; }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .pill {
+      padding: 4px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--brand);
+      background: rgba(15,118,110,.09);
+      border: 1px solid rgba(15,118,110,.18);
+      white-space: nowrap;
+    }
+
+    .agent-copy {
+      margin: 10px 0 0;
+      color: #344054;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .signal {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 8px;
+      min-height: 66px;
+      background: #fbfcfe;
+    }
+
+    .signal b {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .signal span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .chip-row {
+      gap: 7px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 8px;
+      font-size: 11px;
+      color: #344054;
+      background: #fff;
+      font-weight: 700;
+    }
+
+    .order-row {
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #edf1f5;
+      font-size: 13px;
+    }
+
+    .order-row:last-child { border-bottom: 0; }
+    .order-row span { color: var(--muted); }
+    .order-row b { font-size: 14px; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      height: 42px;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .primary { background: var(--red); color: #fff; }
+    .secondary { background: #eef2f6; color: var(--ink); }
+    .buy { background: var(--red); color: #fff; }
+    .sell { background: var(--green); color: #fff; }
+
+    .watch-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .watch-row:last-child { border-bottom: 0; }
+    .watch-row strong { font-size: 13px; }
+    .watch-row small { display: block; color: var(--muted); margin-top: 2px; }
+    .watch-price { font-weight: 900; }
+    .up { color: var(--red); }
+    .down { color: var(--green); }
+
+    .insight {
+      border-left: 3px solid var(--amber);
+      padding-left: 10px;
+      margin-top: 10px;
+      color: #344054;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 72px;
+      background: rgba(255,255,255,.96);
+      border-top: 1px solid var(--line);
+      justify-content: space-around;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-item {
+      min-width: 54px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-item b {
+      display: block;
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .nav-item.active { color: var(--brand); }
+
+    .side-note {
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 18px 48px rgba(16,24,40,.10);
+    }
+
+    .side-note h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .side-note p {
+      color: #475467;
+      line-height: 1.75;
+      margin: 0 0 14px;
+      font-size: 15px;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .feature {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 88px;
+    }
+
+    .feature b { display: block; margin-bottom: 6px; }
+    .feature span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    @media (max-width: 860px) {
+      body { padding: 0; display: block; background: var(--page); }
+      .stage { display: block; width: 100%; }
+      .phone {
+        width: 100%;
+        height: 100vh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .side-note { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="phone" aria-label="deepstock 手机端智能体 demo">
+      <div class="screen">
+        <div class="status"><span>09:30</span><span>5G  87%</span></div>
+        <header class="hero">
+          <div class="brand-row">
+            <div class="brand">
+              <div class="mark">D</div>
+              <div>
+                <h1>deepstock</h1>
+                <div class="sub">A股智能交易助理</div>
+              </div>
+            </div>
+            <div class="live">行情在线</div>
+          </div>
+
+          <div class="market-card">
+            <div class="row">
+              <div>
+                <div class="ticker">贵州茅台 600519.SH</div>
+                <div class="price">¥1,682.50</div>
+              </div>
+              <div class="change">+1.86%</div>
+            </div>
+            <canvas id="spark" width="700" height="180" aria-label="分时走势"></canvas>
+          </div>
+        </header>
+
+        <nav class="tabs" aria-label="功能分区">
+          <div class="tab active">智能体</div>
+          <div class="tab">自选</div>
+          <div class="tab">委托</div>
+          <div class="tab">风控</div>
+        </nav>
+
+        <section class="section">
+          <article class="card">
+            <div class="card-title">
+              <span>交易智能体</span>
+              <span class="pill">低风险观察</span>
+            </div>
+            <p class="agent-copy">
+              今日白酒板块资金回流，600519 站上五日均线。建议等待回踩确认，不追高；若成交量持续放大，可使用限价分批建仓。
+            </p>
+            <div class="signal-grid">
+              <div class="signal"><b>72</b><span>综合评分</span></div>
+              <div class="signal"><b>0.8%</b><span>建议仓位</span></div>
+              <div class="signal"><b>12m</b><span>信号有效期</span></div>
+            </div>
+            <div class="chip-row">
+              <span class="chip">北向流入</span>
+              <span class="chip">量价配合</span>
+              <span class="chip">止损 1,646</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-title">
+              <span>智能委托草稿</span>
+              <span class="pill">需确认</span>
+            </div>
+            <div class="order-row"><span>方向</span><b class="up">买入</b></div>
+            <div class="order-row"><span>代码</span><b>600519.SH</b></div>
+            <div class="order-row"><span>价格</span><b>¥1,678.00 限价</b></div>
+            <div class="order-row"><span>数量</span><b>100 股</b></div>
+            <div class="order-row"><span>最大风险</span><b>¥3,200</b></div>
+            <div class="actions">
+              <button class="secondary" id="explainBtn">解释依据</button>
+              <button class="primary" id="confirmBtn">确认下单</button>
+            </div>
+            <div class="insight" id="agentNote">
+              智能体已纳入盘口价差、当日波动率、账户可用资金和单票风险限额。
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-title">
+              <span>自选机会</span>
+              <span class="pill">实时扫描</span>
+            </div>
+            <div class="watch-row">
+              <div><strong>宁德时代</strong><small>300750.SZ</small></div>
+              <div class="watch-price">¥214.38</div>
+              <div class="up">+2.14%</div>
+            </div>
+            <div class="watch-row">
+              <div><strong>招商银行</strong><small>600036.SH</small></div>
+              <div class="watch-price">¥38.72</div>
+              <div class="up">+0.64%</div>
+            </div>
+            <div class="watch-row">
+              <div><strong>比亚迪</strong><small>002594.SZ</small></div>
+              <div class="watch-price">¥261.10</div>
+              <div class="down">-0.42%</div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <nav class="bottom-nav" aria-label="底部导航">
+        <div class="nav-item active"><b>⌁</b>智能体</div>
+        <div class="nav-item"><b>▦</b>行情</div>
+        <div class="nav-item"><b>⇄</b>交易</div>
+        <div class="nav-item"><b>≡</b>我的</div>
+      </nav>
+    </section>
+
+    <aside class="side-note">
+      <h2>手机端产品方向：把终端压缩成“可确认的智能体”。</h2>
+      <p>
+        桌面终端适合多窗口、多图表和专业交易流程；手机端更适合让智能体先完成扫描、解释和风控计算，再把用户带到一个低摩擦的确认动作。
+      </p>
+      <div class="feature-list">
+        <div class="feature"><b>智能扫描</b><span>自选股、板块和账户仓位合并成一个行动流。</span></div>
+        <div class="feature"><b>可解释建议</b><span>每条买卖建议附带行情、资金、风控和有效期。</span></div>
+        <div class="feature"><b>委托草稿</b><span>智能体生成订单，但用户确认后才进入交易。</span></div>
+        <div class="feature"><b>风险先行</b><span>把止损、仓位、最大亏损前置到下单前。</span></div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("spark");
+    const ctx = canvas.getContext("2d");
+    const points = [42, 47, 45, 51, 55, 52, 58, 62, 61, 66, 68, 72, 70, 76, 80, 78, 84, 88, 92, 90, 96];
+    const pad = 18;
+    const w = canvas.width;
+    const h = canvas.height;
+    const min = Math.min(...points);
+    const max = Math.max(...points);
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = "#e5eaf0";
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 4; i += 1) {
+      const y = (h / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    ctx.beginPath();
+    points.forEach((value, index) => {
+      const x = pad + (index / (points.length - 1)) * (w - pad * 2);
+      const y = h - pad - ((value - min) / (max - min)) * (h - pad * 2);
+      if (index === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "#d92d20";
+    ctx.lineWidth = 5;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    const explainBtn = document.getElementById("explainBtn");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const agentNote = document.getElementById("agentNote");
+
+    explainBtn.addEventListener("click", () => {
+      agentNote.textContent = "依据：价格突破五日均线，盘口卖压低于近五分钟均值，账户单票风险低于 1%，但板块短线涨幅偏高，因此建议限价等待。";
+    });
+
+    confirmBtn.addEventListener("click", () => {
+      agentNote.textContent = "已生成模拟委托：买入 600519.SH，限价 ¥1,678.00，100 股。实盘版本应在这里进入二次确认和券商签名。";
+      confirmBtn.textContent = "已生成";
+      confirmBtn.style.background = "#15803d";
+    });
+  </script>
+</body>
+</html>
