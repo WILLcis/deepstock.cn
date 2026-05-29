@@ -55,14 +55,15 @@ void EquityBottomPanel::setup_positions_tab() {
     positions_table_->setObjectName("eqTable");
     positions_table_->setColumnCount(8);
     positions_table_->setHorizontalHeaderLabels(
-        {"Symbol", "Exchange", "Side", "Qty", "Avg Price", "LTP", "P&L", "P&L %"});
+        {QString::fromUtf8("代码"), QString::fromUtf8("交易所"), QString::fromUtf8("方向"), QString::fromUtf8("数量"),
+         QString::fromUtf8("均价"), QString::fromUtf8("最新价"), QString::fromUtf8("盈亏"), QString::fromUtf8("盈亏%")});
     positions_table_->verticalHeader()->setVisible(false);
     positions_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     positions_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     positions_table_->setShowGrid(false);
     positions_table_->horizontalHeader()->setStretchLastSection(true);
     positions_table_->verticalHeader()->setDefaultSectionSize(22);
-    tabs_->addTab(positions_table_, "POSITIONS");
+    tabs_->addTab(positions_table_, QString::fromUtf8("持仓"));
 }
 
 // ── Holdings Tab ───────────────────────────────────────────────────────────
@@ -98,14 +99,14 @@ void EquityBottomPanel::setup_holdings_tab() {
         strip_layout->addWidget(cell);
         return val;
     };
-    holdings_count_label_     = make_stat("HOLDINGS");
-    holdings_invested_label_  = make_stat("INVESTED");
-    holdings_current_label_   = make_stat("CURRENT");
-    holdings_pnl_label_       = make_stat("TOTAL P&L");
-    holdings_pnl_pct_label_   = make_stat("RETURN %");
+    holdings_count_label_     = make_stat(QString::fromUtf8("持仓数"));
+    holdings_invested_label_  = make_stat(QString::fromUtf8("投入成本"));
+    holdings_current_label_   = make_stat(QString::fromUtf8("当前市值"));
+    holdings_pnl_label_       = make_stat(QString::fromUtf8("总盈亏"));
+    holdings_pnl_pct_label_   = make_stat(QString::fromUtf8("收益率"));
     strip_layout->addStretch(1);
 
-    holdings_import_btn_ = new QPushButton("IMPORT TO PORTFOLIO");
+    holdings_import_btn_ = new QPushButton(QString::fromUtf8("导入组合"));
     holdings_import_btn_->setCursor(Qt::PointingHandCursor);
     holdings_import_btn_->setEnabled(false);
     holdings_import_btn_->setStyleSheet(
@@ -128,7 +129,8 @@ void EquityBottomPanel::setup_holdings_tab() {
     holdings_table_->setObjectName("eqTable");
     holdings_table_->setColumnCount(8);
     holdings_table_->setHorizontalHeaderLabels(
-        {"Symbol", "Qty", "Avg Price", "LTP", "Invested", "Current", "P&L", "P&L %"});
+        {QString::fromUtf8("代码"), QString::fromUtf8("数量"), QString::fromUtf8("成本价"), QString::fromUtf8("最新价"),
+         QString::fromUtf8("投入"), QString::fromUtf8("市值"), QString::fromUtf8("盈亏"), QString::fromUtf8("盈亏%")});
     holdings_table_->verticalHeader()->setVisible(false);
     holdings_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     holdings_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -144,7 +146,7 @@ void EquityBottomPanel::setup_holdings_tab() {
     holdings_table_->horizontalScrollBar()->setSingleStep(16);
 
     v->addWidget(holdings_table_, 1);
-    tabs_->addTab(tab, "HOLDINGS");
+    tabs_->addTab(tab, QString::fromUtf8("资产"));
 }
 
 // ── Orders Tab ─────────────────────────────────────────────────────────────
@@ -154,14 +156,16 @@ void EquityBottomPanel::setup_orders_tab() {
     orders_table_->setObjectName("eqTable");
     orders_table_->setColumnCount(9);
     orders_table_->setHorizontalHeaderLabels(
-        {"Order ID", "Symbol", "Side", "Type", "Qty", "Price", "Status", "Time", "Action"});
+        {QString::fromUtf8("订单号"), QString::fromUtf8("代码"), QString::fromUtf8("方向"), QString::fromUtf8("类型"),
+         QString::fromUtf8("数量"), QString::fromUtf8("价格"), QString::fromUtf8("状态"), QString::fromUtf8("时间"),
+         QString::fromUtf8("操作")});
     orders_table_->verticalHeader()->setVisible(false);
     orders_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     orders_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
     orders_table_->setShowGrid(false);
     orders_table_->horizontalHeader()->setStretchLastSection(true);
     orders_table_->verticalHeader()->setDefaultSectionSize(22);
-    tabs_->addTab(orders_table_, "ORDERS");
+    tabs_->addTab(orders_table_, QString::fromUtf8("委托"));
 }
 
 // ── Funds Tab ──────────────────────────────────────────────────────────────
@@ -186,13 +190,13 @@ void EquityBottomPanel::setup_funds_tab() {
         return val;
     };
 
-    available_label_ = make_row("Available Balance");
-    used_margin_label_ = make_row("Used Margin");
-    total_label_ = make_row("Total Balance");
-    collateral_label_ = make_row("Collateral");
+    available_label_ = make_row(QString::fromUtf8("可用资金"));
+    used_margin_label_ = make_row(QString::fromUtf8("已用保证金"));
+    total_label_ = make_row(QString::fromUtf8("资金总额"));
+    collateral_label_ = make_row(QString::fromUtf8("担保品"));
 
     layout->addStretch();
-    tabs_->addTab(widget, "FUNDS");
+    tabs_->addTab(widget, QString::fromUtf8("资金"));
 }
 
 // ── Stats Tab ──────────────────────────────────────────────────────────────
@@ -203,7 +207,7 @@ void EquityBottomPanel::setup_stats_tab() {
     layout->setContentsMargins(12, 12, 12, 12);
     layout->setSpacing(8);
 
-    const char* stat_labels[] = {"Total P&L", "Win Rate", "Total Trades", "Largest Win", "Largest Loss"};
+    const char* stat_labels[] = {"总盈亏", "胜率", "总成交", "最大盈利", "最大亏损"};
     for (int i = 0; i < 5; ++i) {
         auto* row = new QHBoxLayout;
         auto* lbl = new QLabel(stat_labels[i]);
@@ -218,7 +222,7 @@ void EquityBottomPanel::setup_stats_tab() {
     }
 
     layout->addStretch();
-    tabs_->addTab(widget, "STATS");
+    tabs_->addTab(widget, QString::fromUtf8("统计"));
 }
 
 // ── Data Setters ───────────────────────────────────────────────────────────
@@ -271,7 +275,7 @@ void EquityBottomPanel::set_paper_trades(const QVector<trading::PtTrade>& trades
     // Add a separator row
     orders_table_->setRowCount(base + 1 + trades.size());
     auto* sep_item = ensure_item(orders_table_, base, 0);
-    sep_item->setText("--- RECENT TRADES ---");
+    sep_item->setText(QString::fromUtf8("--- 最近成交 ---"));
     sep_item->setForeground(QColor(fincept::ui::colors::AMBER()));
     for (int c = 1; c < 8; ++c)
         ensure_item(orders_table_, base, c)->setText("");
@@ -420,7 +424,7 @@ void EquityBottomPanel::set_orders(const QVector<trading::BrokerOrderInfo>& orde
         const bool modifiable = (o.status == "new" || o.status == "partially_filled" || o.status == "accepted" ||
                                  o.status == "pending_new");
         if (modifiable) {
-            auto* btn = new QPushButton("EDIT");
+            auto* btn = new QPushButton(QString::fromUtf8("改"));
             btn->setObjectName("eqTableBtn");
             btn->setFixedHeight(18);
             btn->setStyleSheet(QString("QPushButton#eqTableBtn { background: rgba(217,119,6,0.15); "
@@ -435,7 +439,7 @@ void EquityBottomPanel::set_orders(const QVector<trading::BrokerOrderInfo>& orde
             connect(btn, &QPushButton::clicked, this, [this, oid, qty, prc]() {
                 // Show inline edit dialog
                 auto* dlg = new QDialog(this);
-                dlg->setWindowTitle("Modify Order");
+                dlg->setWindowTitle(QString::fromUtf8("修改委托"));
                 dlg->setFixedWidth(280);
                 dlg->setStyleSheet(QString("QDialog { background: %1; color: %2; }"
                                            "QLabel { color: %3; font-size: 11px; }"
@@ -453,17 +457,17 @@ void EquityBottomPanel::set_orders(const QVector<trading::BrokerOrderInfo>& orde
                 vlay->setSpacing(6);
                 vlay->setContentsMargins(14, 14, 14, 14);
 
-                auto* qty_lbl = new QLabel("QTY");
+                auto* qty_lbl = new QLabel(QString::fromUtf8("数量"));
                 auto* qty_edit = new QLineEdit(QString::number(qty, 'f', 0));
-                auto* prc_lbl = new QLabel("LIMIT PRICE");
+                auto* prc_lbl = new QLabel(QString::fromUtf8("限价"));
                 auto* prc_edit = new QLineEdit(QString::number(prc, 'f', 2));
 
                 auto* btn_row = new QHBoxLayout;
-                auto* ok_btn = new QPushButton("MODIFY");
+                auto* ok_btn = new QPushButton(QString::fromUtf8("修改"));
                 ok_btn->setStyleSheet(QString("background: rgba(217,119,6,0.15); color: %1; border: 1px solid %2;")
                                           .arg(fincept::ui::colors::AMBER())
                                           .arg(fincept::ui::colors::AMBER_DIM()));
-                auto* cancel_btn = new QPushButton("CANCEL");
+                auto* cancel_btn = new QPushButton(QString::fromUtf8("取消"));
                 cancel_btn->setStyleSheet(QString("background: rgba(220,38,38,0.1); color: %1; border: 1px solid %2;")
                                               .arg(fincept::ui::colors::NEGATIVE())
                                               .arg(fincept::ui::colors::NEGATIVE_DIM()));
@@ -507,7 +511,8 @@ void EquityBottomPanel::setup_auctions_tab() {
     auctions_table_ = new QTableWidget;
     auctions_table_->setObjectName("eqTable");
     auctions_table_->setColumnCount(6);
-    auctions_table_->setHorizontalHeaderLabels({"Date", "Type", "Time", "Price", "Size", "Exchange"});
+    auctions_table_->setHorizontalHeaderLabels({QString::fromUtf8("日期"), QString::fromUtf8("类型"), QString::fromUtf8("时间"),
+                                                QString::fromUtf8("价格"), QString::fromUtf8("数量"), QString::fromUtf8("交易所")});
     auctions_table_->verticalHeader()->setVisible(false);
     auctions_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     auctions_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -515,7 +520,7 @@ void EquityBottomPanel::setup_auctions_tab() {
     auctions_table_->horizontalHeader()->setStretchLastSection(true);
     auctions_table_->verticalHeader()->setDefaultSectionSize(20);
     auctions_table_->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    tabs_->addTab(auctions_table_, "AUCTIONS");
+    tabs_->addTab(auctions_table_, QString::fromUtf8("集合竞价"));
 }
 
 void EquityBottomPanel::set_auctions(const QVector<trading::BrokerAuction>& auctions) {
@@ -540,7 +545,7 @@ void EquityBottomPanel::set_auctions(const QVector<trading::BrokerAuction>& auct
             const QString time_str =
                 QDateTime::fromString(entry.timestamp, Qt::ISODateWithMs).toLocalTime().toString("hh:mm:ss");
             set(0, auction.date, QColor(fincept::ui::colors::TEXT_SECONDARY()));
-            set(1, is_open ? "OPEN" : "CLOSE", type_color);
+            set(1, is_open ? QString::fromUtf8("开盘") : QString::fromUtf8("收盘"), type_color);
             set(2, time_str, QColor(fincept::ui::colors::TEXT_SECONDARY()));
             set(3, QString::number(entry.price, 'f', 2));
             set(4, QString::number(entry.size, 'f', 0), QColor(fincept::ui::colors::TEXT_SECONDARY()));
@@ -560,7 +565,8 @@ void EquityBottomPanel::setup_time_sales_tab() {
     time_sales_table_ = new QTableWidget;
     time_sales_table_->setObjectName("eqTable");
     time_sales_table_->setColumnCount(6);
-    time_sales_table_->setHorizontalHeaderLabels({"Time", "Price", "Size", "Exchange", "Conditions", "Tape"});
+    time_sales_table_->setHorizontalHeaderLabels({QString::fromUtf8("时间"), QString::fromUtf8("价格"), QString::fromUtf8("数量"),
+                                                  QString::fromUtf8("交易所"), QString::fromUtf8("条件"), QString::fromUtf8("分区")});
     time_sales_table_->verticalHeader()->setVisible(false);
     time_sales_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     time_sales_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -569,7 +575,7 @@ void EquityBottomPanel::setup_time_sales_tab() {
     time_sales_table_->verticalHeader()->setDefaultSectionSize(20);
     time_sales_table_->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     time_sales_table_->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    tabs_->addTab(time_sales_table_, "TIME & SALES");
+    tabs_->addTab(time_sales_table_, QString::fromUtf8("逐笔成交"));
 }
 
 static void fill_trade_row(QTableWidget* table, int row, const trading::BrokerTrade& t,
@@ -635,7 +641,7 @@ void EquityBottomPanel::setup_calendar_tab() {
     banner_lay->setContentsMargins(10, 0, 10, 0);
     banner_lay->setSpacing(16);
 
-    clock_status_label_ = new QLabel("● MARKET --");
+    clock_status_label_ = new QLabel(QString::fromUtf8("● 市场 --"));
     clock_status_label_->setObjectName("calClockStatus");
     clock_status_label_->setStyleSheet(
         QString("color: %1; font-size: 11px; font-weight: 700;").arg(fincept::ui::colors::TEXT_TERTIARY()));
@@ -653,7 +659,9 @@ void EquityBottomPanel::setup_calendar_tab() {
     calendar_table_ = new QTableWidget;
     calendar_table_->setObjectName("eqTable");
     calendar_table_->setColumnCount(5);
-    calendar_table_->setHorizontalHeaderLabels({"Date", "Open (ET)", "Close (ET)", "Pre-Market", "After-Hours"});
+    calendar_table_->setHorizontalHeaderLabels({QString::fromUtf8("日期"), QString::fromUtf8("开盘"),
+                                                QString::fromUtf8("收盘"), QString::fromUtf8("盘前"),
+                                                QString::fromUtf8("盘后")});
     calendar_table_->verticalHeader()->setVisible(false);
     calendar_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     calendar_table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -665,7 +673,7 @@ void EquityBottomPanel::setup_calendar_tab() {
     calendar_table_->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     vlay->addWidget(calendar_table_);
 
-    tabs_->addTab(container, "CALENDAR");
+    tabs_->addTab(container, QString::fromUtf8("交易日历"));
 }
 
 void EquityBottomPanel::set_calendar(const QVector<trading::MarketCalendarDay>& days) {
@@ -704,22 +712,22 @@ void EquityBottomPanel::set_clock(const trading::MarketClock& clock) {
         return;
 
     if (clock.is_open) {
-        clock_status_label_->setText("● MARKET OPEN");
+        clock_status_label_->setText(QString::fromUtf8("● 市场开盘"));
         clock_status_label_->setStyleSheet(
             QString("color: %1; font-size: 11px; font-weight: 700;").arg(fincept::ui::colors::POSITIVE()));
     } else {
-        clock_status_label_->setText("● MARKET CLOSED");
+        clock_status_label_->setText(QString::fromUtf8("● 市场休市"));
         clock_status_label_->setStyleSheet(
             QString("color: %1; font-size: 11px; font-weight: 700;").arg(fincept::ui::colors::NEGATIVE()));
     }
 
     // Parse ISO timestamps and show local-friendly next event
     if (!clock.next_open.isEmpty() || !clock.next_close.isEmpty()) {
-        const QString next_event = clock.is_open ? QString("Closes %1")
+        const QString next_event = clock.is_open ? QString::fromUtf8("收盘 %1")
                                                        .arg(QDateTime::fromString(clock.next_close, Qt::ISODateWithMs)
                                                                 .toLocalTime()
                                                                 .toString("MMM d h:mm ap"))
-                                                 : QString("Opens %1")
+                                                 : QString::fromUtf8("开盘 %1")
                                                        .arg(QDateTime::fromString(clock.next_open, Qt::ISODateWithMs)
                                                                 .toLocalTime()
                                                                 .toString("MMM d h:mm ap"));

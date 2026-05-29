@@ -1,9 +1,15 @@
 #include "ui/navigation/CommandBar.h"
 
+#include "app/TerminalShell.h"
+#include "core/actions/ActionRegistry.h"
 #include "core/events/EventBus.h"
 #include "core/keys/KeyConfigManager.h"
+#include "core/keys/WindowCycler.h"
+#include "core/logging/Logger.h"
 #include "core/session/ScreenStateManager.h"
 #include "network/http/HttpClient.h"
+#include "ui/command/CommandParser.h"
+#include "ui/notifications/NotificationService.h"
 #include "ui/theme/Theme.h"
 #include "ui/theme/ThemeManager.h"
 
@@ -22,6 +28,15 @@ namespace fincept::ui {
 
 static constexpr int kMaxResults = 10;
 static constexpr int kSearchDebounceMs = 300;
+
+static QString canonical_market_symbol(QString symbol) {
+    symbol = symbol.trimmed().toUpper();
+    if (symbol == "XAUUSD=X" || symbol == "XAUUSD" || symbol == "XAU/USD" || symbol == "GOLD")
+        return QStringLiteral("GC=F");
+    if (symbol == "XAGUSD=X" || symbol == "XAGUSD" || symbol == "XAG/USD" || symbol == "SILVER")
+        return QStringLiteral("SI=F");
+    return symbol;
+}
 
 // ── styling ─────────────────────────────────────────────────────────────────
 
@@ -215,11 +230,11 @@ void CommandBar::build_commands() {
         {"forum", "Forum", "Community forum", {"forum", "community"}, "", {"forum", "community", "discuss"}},
         // Trading & Portfolio
         {"equity_trading",
-         "Equity Trading",
-         "Stock trading interface",
-         {"eqtrade", "stocks", "equities"},
+         QString::fromUtf8("A股交易"),
+         QString::fromUtf8("A股行情、自选、盘口和下单"),
+         {"a-share", "cnstock", "stocks", "equities"},
          "",
-         {"equity", "stocks", "trading"}},
+         {"A股", "股票", "交易", "盘口"}},
         {"algo_trading",
          "Algo Trading",
          "Algorithmic trading",
@@ -391,7 +406,7 @@ void CommandBar::build_commands() {
         // Community / Info
         {"about",
          "About",
-         "About Fincept Terminal",
+         "About deepstock",
          {"about", "info", "version"},
          "",
          {"about", "information", "version"}},
@@ -482,7 +497,7 @@ CommandBar::CommandBar(QWidget* parent) : QWidget(parent) {
 
     input_ = new QLineEdit(this);
     input_->setFixedHeight(24);
-    input_->setPlaceholderText("> Enter Command or /type ...");
+    input_->setPlaceholderText("> Symbol, command, or /type ...");
     input_->setStyleSheet(input_ss());
     input_->installEventFilter(this);
     hl->addWidget(input_);
@@ -930,7 +945,9 @@ void CommandBar::on_return_pressed() {
                 input_->clear();
                 mode_ = Mode::Screen;
                 hide_dropdown();
+                return;
             }
+            execute_global_command(text);
         }
         return;
     }
@@ -1262,6 +1279,81 @@ void CommandBar::select_asset(const QString& symbol, const QString& type) {
                                                                     {"symbol", symbol},
                                                                     {"type", type},
                                                                 });
+}
+
+bool CommandBar::execute_global_command(const QString& text) {
+    const QString raw = text.trimmed();
+    if (raw.isEmpty())
+        return false;
+
+    const auto parsed = CommandParser::parse(raw);
+    CommandContext ctx;
+    ctx.shell = &TerminalShell::instance();
+    ctx.focused_frame = WindowCycler::instance().focused_frame();
+
+    switch (parsed.kind) {
+    case ParsedCommand::Kind::Empty:
+        return false;
+    case ParsedCommand::Kind::Help:
+        ToastService::instance().post(
+            ToastService::Severity::Info,
+            "Type a screen name, /stock AAPL, a ticker like XAUUSD=X, or a command like layout save gold.",
+            "command_bar");
+        return true;
+    case ParsedCommand::Kind::Symbol:
+        ctx.args.insert(QStringLiteral("group"), QStringLiteral("A"));
+        ctx.args.insert(
+            QStringLiteral("symbol"),
+            canonical_market_symbol(parsed.args.value(QStringLiteral("symbol")).toString()));
+        break;
+    case ParsedCommand::Kind::Action:
+        ctx.args = parsed.args;
+        break;
+    case ParsedCommand::Kind::Unknown:
+        ToastService::instance().post(
+            ToastService::Severity::Warning,
+            parsed.error.isEmpty() ? QStringLiteral("Unknown command") : parsed.error,
+            "command_bar");
+        return false;
+    }
+
+    const QString action_id = parsed.kind == ParsedCommand::Kind::Symbol
+                                  ? QStringLiteral("link.publish_to_group")
+                                  : parsed.action_id;
+    auto r = ActionRegistry::instance().invoke(action_id, ctx);
+    if (r.is_err()) {
+        const QString msg = QString::fromStdString(r.error());
+        LOG_WARN("CommandBar", QString("Command failed '%1': %2").arg(raw, msg));
+        ToastService::instance().post(ToastService::Severity::Warning, msg, "command_bar");
+        return false;
+    }
+
+    LOG_INFO("CommandBar", QString("Executed '%1' via action '%2'").arg(raw, action_id));
+    input_->clear();
+    mode_ = Mode::Screen;
+    active_asset_type_.clear();
+    dock_primary_id_.clear();
+    dock_verb_.clear();
+    hide_dropdown();
+    input_->clearFocus();
+    if (parsed.kind == ParsedCommand::Kind::Symbol) {
+        const QString symbol = canonical_market_symbol(parsed.args.value(QStringLiteral("symbol")).toString());
+        emit navigate_to("equity_research");
+        EventBus::instance().publish("equity_research.load_symbol", {
+            {"symbol", symbol},
+            {"type", QStringLiteral("stock")},
+        });
+        ToastService::instance().post(
+            ToastService::Severity::Success,
+            QString("Loaded %1").arg(symbol),
+            "command_bar");
+    } else {
+        ToastService::instance().post(
+            ToastService::Severity::Success,
+            QString("Executed %1").arg(action_id),
+            "command_bar");
+    }
+    return true;
 }
 
 // ── dropdown helpers ─────────────────────────────────────────────────────────

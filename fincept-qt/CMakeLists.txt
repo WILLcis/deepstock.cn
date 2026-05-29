@@ -23,7 +23,7 @@ if(WIN32 AND CMAKE_HOST_WIN32)
     endif()
 endif()
 
-project(FinceptTerminal VERSION 4.0.2 LANGUAGES C CXX)
+project(deepstock VERSION 4.0.2 LANGUAGES C CXX)
 
 # Strip C/C++ flags out of RC invocations — rc.exe only understands /D, /I, /fo.
 if(WIN32)
@@ -42,7 +42,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 # ── Pinned toolchain enforcement ─────────────────────────────────────────────
-# Fincept Terminal ships on 3 platforms and cannot tolerate compiler-version
+# deepstock ships on 3 platforms and cannot tolerate compiler-version
 # drift. These checks fail the build early with an actionable message rather
 # than letting the user hit a cryptic template error 10 minutes into compile.
 if(MSVC AND MSVC_VERSION LESS 1938)
@@ -137,7 +137,7 @@ if(APPLE)
     # produce bundles that require that newer host OS at runtime.
     if(NOT DEFINED CMAKE_OSX_DEPLOYMENT_TARGET OR CMAKE_OSX_DEPLOYMENT_TARGET STREQUAL "")
         set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING
-            "Minimum macOS version supported by Fincept Terminal" FORCE)
+            "Minimum macOS version supported by deepstock" FORCE)
     endif()
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks;@executable_path/../lib")
@@ -248,7 +248,7 @@ add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN)
 # OFF by default so a normal build is unchanged. Turn on with
 # -DFINCEPT_BUILD_TESTS=ON to compile the Qt Test executables under
 # fincept-qt/tests/. Run via `ctest` in the build directory.
-option(FINCEPT_BUILD_TESTS "Build the Fincept Terminal test suite" OFF)
+option(FINCEPT_BUILD_TESTS "Build the deepstock test suite" OFF)
 
 # ── Qt packages ──────────────────────────────────────────────────────────────
 # Qt is pinned to 6.8.3 across all platforms. Releases must build
@@ -397,7 +397,7 @@ else()
     add_library(QXlsx_stub INTERFACE)
     add_library(QXlsx::QXlsx ALIAS QXlsx_stub)
 endif()
-# NOTE: FINCEPT_HAS_QXLSX compile definition is applied to FinceptTerminal
+# NOTE: FINCEPT_HAS_QXLSX compile definition is applied to deepstock
 # after add_executable() — see the target_compile_definitions block below.
 
 # ── Auto-update service ─────────────────────────────────────────────────────
@@ -1876,7 +1876,7 @@ else()
     set(_FINCEPT_PLATFORM_SOURCES "")
 endif()
 
-add_executable(FinceptTerminal ${_FINCEPT_EXE_FLAGS}
+add_executable(deepstock ${_FINCEPT_EXE_FLAGS}
     ${CORE_SOURCES}
     ${NETWORK_SOURCES}
     ${DATAHUB_SOURCES}
@@ -1894,25 +1894,25 @@ add_executable(FinceptTerminal ${_FINCEPT_EXE_FLAGS}
     ${_FINCEPT_PLATFORM_SOURCES}
 )
 
-target_include_directories(FinceptTerminal PRIVATE
+target_include_directories(deepstock PRIVATE
     src
     ${SingleApplication_SOURCE_DIR}
 )
 
 # ── macOS bundle properties ───────────────────────────────────────────────────
 if(APPLE)
-    set_target_properties(FinceptTerminal PROPERTIES
-        MACOSX_BUNDLE_GUI_IDENTIFIER    "com.fincept.terminal"
-        MACOSX_BUNDLE_BUNDLE_NAME       "Fincept Terminal"
+    set_target_properties(deepstock PROPERTIES
+        MACOSX_BUNDLE_GUI_IDENTIFIER    "com.deepstock.terminal"
+        MACOSX_BUNDLE_BUNDLE_NAME       "deepstock"
         MACOSX_BUNDLE_BUNDLE_VERSION    "${CMAKE_PROJECT_VERSION}"
         MACOSX_BUNDLE_SHORT_VERSION_STRING "${CMAKE_PROJECT_VERSION}"
         MACOSX_BUNDLE_ICON_FILE         "fincept.icns"
-        MACOSX_BUNDLE_COPYRIGHT         "Copyright © 2025 Fincept Corporation"
+        MACOSX_BUNDLE_COPYRIGHT         "Copyright © 2025 DeepStock"
     )
     # Copy .icns into the bundle Resources folder at build time
     set(_FINCEPT_ICNS "${CMAKE_CURRENT_SOURCE_DIR}/resources/fincept.icns")
     if(EXISTS "${_FINCEPT_ICNS}")
-        target_sources(FinceptTerminal PRIVATE "${_FINCEPT_ICNS}")
+        target_sources(deepstock PRIVATE "${_FINCEPT_ICNS}")
         set_source_files_properties("${_FINCEPT_ICNS}"
             PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
     else()
@@ -1928,20 +1928,20 @@ if(APPLE AND DEPLOY_QT)
               "$ENV{QTDIR}/bin"
     )
     if(MACDEPLOYQT_EXECUTABLE)
-        add_custom_command(TARGET FinceptTerminal POST_BUILD
+        add_custom_command(TARGET deepstock POST_BUILD
             COMMAND "${MACDEPLOYQT_EXECUTABLE}"
-                "$<TARGET_BUNDLE_DIR:FinceptTerminal>"
+                "$<TARGET_BUNDLE_DIR:deepstock>"
                 -no-strip -always-overwrite
             COMMENT "Running macdeployqt to bundle Qt frameworks..."
         )
         # Remove unused SQL driver plugins that reference libraries not present
         # on typical macOS installs (ODBC, PostgreSQL, Mimer). These cause
         # harmless but noisy "ERROR: no file at ..." warnings from macdeployqt.
-        add_custom_command(TARGET FinceptTerminal POST_BUILD
+        add_custom_command(TARGET deepstock POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E rm -f
-                "$<TARGET_BUNDLE_DIR:FinceptTerminal>/Contents/PlugIns/sqldrivers/libqsqlodbc.dylib"
-                "$<TARGET_BUNDLE_DIR:FinceptTerminal>/Contents/PlugIns/sqldrivers/libqsqlpsql.dylib"
-                "$<TARGET_BUNDLE_DIR:FinceptTerminal>/Contents/PlugIns/sqldrivers/libqsqlmimer.dylib"
+                "$<TARGET_BUNDLE_DIR:deepstock>/Contents/PlugIns/sqldrivers/libqsqlodbc.dylib"
+                "$<TARGET_BUNDLE_DIR:deepstock>/Contents/PlugIns/sqldrivers/libqsqlpsql.dylib"
+                "$<TARGET_BUNDLE_DIR:deepstock>/Contents/PlugIns/sqldrivers/libqsqlmimer.dylib"
             COMMENT "Removing unused SQL driver plugins (ODBC/PostgreSQL/Mimer)..."
         )
     else()
@@ -1952,7 +1952,7 @@ endif()
 
 # Precompiled header — Qt + std headers parsed once, reused across all TUs
 # QDebug excluded — it adds overhead in Release and is only needed for debugging
-target_precompile_headers(FinceptTerminal PRIVATE
+target_precompile_headers(deepstock PRIVATE
     # ── Core Qt objects ───────────────────────────────────────────────────────
     <QObject>
     <QWidget>
@@ -2119,11 +2119,11 @@ endif()
 find_package(OpenSSL REQUIRED)
 message(STATUS "OpenSSL found: ${OPENSSL_VERSION} — include: ${OPENSSL_INCLUDE_DIR}")
 
-target_include_directories(FinceptTerminal PRIVATE
+target_include_directories(deepstock PRIVATE
     "${OPENSSL_INCLUDE_DIR}"
     "${md4c_SOURCE_DIR}/src"
 )
-target_link_libraries(FinceptTerminal PRIVATE
+target_link_libraries(deepstock PRIVATE
     Qt6::Widgets
     Qt6::Charts
     Qt6::PrintSupport
@@ -2144,7 +2144,7 @@ target_link_libraries(FinceptTerminal PRIVATE
 
 # macOS: link Security.framework + CoreFoundation for SecItem API in SecureStorage
 if(APPLE)
-    target_link_libraries(FinceptTerminal PRIVATE "-framework Security" "-framework CoreFoundation")
+    target_link_libraries(deepstock PRIVATE "-framework Security" "-framework CoreFoundation")
 endif()
 
 # Linux: optionally link libsecret for cryptographically-secure credential
@@ -2158,8 +2158,8 @@ if(UNIX AND NOT APPLE)
     if(PkgConfig_FOUND)
         pkg_check_modules(LIBSECRET IMPORTED_TARGET libsecret-1)
         if(LIBSECRET_FOUND)
-            target_link_libraries(FinceptTerminal PRIVATE PkgConfig::LIBSECRET)
-            target_compile_definitions(FinceptTerminal PRIVATE FINCEPT_HAVE_LIBSECRET)
+            target_link_libraries(deepstock PRIVATE PkgConfig::LIBSECRET)
+            target_compile_definitions(deepstock PRIVATE FINCEPT_HAVE_LIBSECRET)
             message(STATUS "libsecret found — Linux SecureStorage will use Secret Service backend")
         else()
             message(WARNING
@@ -2176,7 +2176,7 @@ endif()
 # /OPT:REF aggressively on release builds the indirect reference via wincred.h
 # can get stripped, producing late-link errors.
 if(WIN32)
-    target_link_libraries(FinceptTerminal PRIVATE dbghelp Advapi32 Crypt32)
+    target_link_libraries(deepstock PRIVATE dbghelp Advapi32 Crypt32)
 endif()
 
 # Copy OpenSSL DLLs to build output — Windows only
@@ -2209,13 +2209,13 @@ if(WIN32)
     endif()
 
     if(OPENSSL_CRYPTO_DLL_FILE AND OPENSSL_SSL_DLL_FILE)
-        add_custom_command(TARGET FinceptTerminal POST_BUILD
+        add_custom_command(TARGET deepstock POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 "${OPENSSL_CRYPTO_DLL_FILE}"
-                "$<TARGET_FILE_DIR:FinceptTerminal>"
+                "$<TARGET_FILE_DIR:deepstock>"
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 "${OPENSSL_SSL_DLL_FILE}"
-                "$<TARGET_FILE_DIR:FinceptTerminal>"
+                "$<TARGET_FILE_DIR:deepstock>"
             COMMENT "Copying OpenSSL DLLs..."
         )
         message(STATUS "OpenSSL DLLs to deploy: ${OPENSSL_CRYPTO_DLL_FILE}, ${OPENSSL_SSL_DLL_FILE}")
@@ -2227,35 +2227,35 @@ endif()
 # ── Application version (single source of truth) ─────────────────────────────
 # FINCEPT_VERSION_STRING is consumed by main.cpp so QApplication::applicationVersion()
 # always matches the project() VERSION declared at the top of this file.
-target_compile_definitions(FinceptTerminal PRIVATE
+target_compile_definitions(deepstock PRIVATE
     FINCEPT_VERSION_STRING="${CMAKE_PROJECT_VERSION}")
 
 # ── Optional feature compile definitions (applied after add_executable) ──────
 if(FINCEPT_HAS_PRIVATE_HEADERS)
-    target_compile_definitions(FinceptTerminal PRIVATE FINCEPT_HAS_QXLSX)
+    target_compile_definitions(deepstock PRIVATE FINCEPT_HAS_QXLSX)
 endif()
 
 if(HAS_WEBSOCKETS)
-    target_link_libraries(FinceptTerminal PRIVATE Qt6::WebSockets)
-    target_compile_definitions(FinceptTerminal PRIVATE HAS_QT_WEBSOCKETS)
+    target_link_libraries(deepstock PRIVATE Qt6::WebSockets)
+    target_compile_definitions(deepstock PRIVATE HAS_QT_WEBSOCKETS)
 endif()
 
 if(HAS_MULTIMEDIA)
-    target_link_libraries(FinceptTerminal PRIVATE Qt6::MultimediaWidgets)
-    target_compile_definitions(FinceptTerminal PRIVATE HAS_QT_MULTIMEDIA)
+    target_link_libraries(deepstock PRIVATE Qt6::MultimediaWidgets)
+    target_compile_definitions(deepstock PRIVATE HAS_QT_MULTIMEDIA)
 endif()
 
 if(HAS_TTS)
-    target_link_libraries(FinceptTerminal PRIVATE Qt6::TextToSpeech)
-    target_compile_definitions(FinceptTerminal PRIVATE HAS_QT_TTS)
+    target_link_libraries(deepstock PRIVATE Qt6::TextToSpeech)
+    target_compile_definitions(deepstock PRIVATE HAS_QT_TTS)
 endif()
 
 # ── Copy qgeoview DLL next to the exe so it's found at runtime ────────────────
 if(WIN32)
-    add_custom_command(TARGET FinceptTerminal POST_BUILD
+    add_custom_command(TARGET deepstock POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "$<TARGET_FILE:qgeoview>"
-            "$<TARGET_FILE_DIR:FinceptTerminal>"
+            "$<TARGET_FILE_DIR:deepstock>"
         COMMENT "Copying qgeoview.dll..."
     )
 endif()
@@ -2274,9 +2274,9 @@ if(WIN32)
         # when nothing changed. The previous DEPLOY_QT=ON gate caused the
         # exe to run against a stale plugin set after a clean rebuild,
         # producing 0xc0000005 crashes on startup.
-        add_custom_command(TARGET FinceptTerminal POST_BUILD
+        add_custom_command(TARGET deepstock POST_BUILD
             COMMAND "${WINDEPLOYQT_EXE}"
-            ARGS "--no-translations" "--no-compiler-runtime" "$<TARGET_FILE:FinceptTerminal>"
+            ARGS "--no-translations" "--no-compiler-runtime" "$<TARGET_FILE:deepstock>"
             COMMENT "Running windeployqt..."
         )
     endif()
@@ -2289,12 +2289,12 @@ if(WIN32)
     # Always overwrite the sql plugins with the consistent set after every build.
     set(QT_CONSISTENT_PLUGINS "C:/Qt_temp/6.8.3/msvc2022_64/plugins")
     if(EXISTS "${QT_CONSISTENT_PLUGINS}/sqldrivers/qsqlite.dll")
-        add_custom_command(TARGET FinceptTerminal POST_BUILD
+        add_custom_command(TARGET deepstock POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory
-                "$<TARGET_FILE_DIR:FinceptTerminal>/sqldrivers"
+                "$<TARGET_FILE_DIR:deepstock>/sqldrivers"
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 "${QT_CONSISTENT_PLUGINS}/sqldrivers/qsqlite.dll"
-                "$<TARGET_FILE_DIR:FinceptTerminal>/sqldrivers/qsqlite.dll"
+                "$<TARGET_FILE_DIR:deepstock>/sqldrivers/qsqlite.dll"
             COMMENT "Overwriting sqldrivers with consistent Qt_temp plugins..."
         )
     endif()
@@ -2305,11 +2305,11 @@ endif()
 # that must never ship — backup folders (agents.deleted.*), test caches,
 # local SQLite databases — because on macOS anything unexpected in the
 # .app bundle makes codesign reject it ("bundle format unrecognized").
-add_custom_command(TARGET FinceptTerminal POST_BUILD
+add_custom_command(TARGET deepstock POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/scripts"
-    COMMAND ${CMAKE_COMMAND} -DSCRIPTS_DIR=$<TARGET_FILE_DIR:FinceptTerminal>/scripts
+        "$<TARGET_FILE_DIR:deepstock>/scripts"
+    COMMAND ${CMAKE_COMMAND} -DSCRIPTS_DIR=$<TARGET_FILE_DIR:deepstock>/scripts
             -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/prune_scripts_junk.cmake"
     COMMENT "Copying Python scripts to build output + pruning junk..."
 )
@@ -2318,37 +2318,37 @@ add_custom_command(TARGET FinceptTerminal POST_BUILD
 # PythonSetupManager::find_requirements_file() searches exe_dir/resources/ first.
 # Without this POST_BUILD step the files are only available via cmake --install,
 # causing setup to silently fail in dev/debug builds.
-add_custom_command(TARGET FinceptTerminal POST_BUILD
+add_custom_command(TARGET deepstock POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources"
+        "$<TARGET_FILE_DIR:deepstock>/resources"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/requirements-numpy1.txt"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/requirements-numpy1.txt"
+        "$<TARGET_FILE_DIR:deepstock>/resources/requirements-numpy1.txt"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/requirements-numpy2.txt"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/requirements-numpy2.txt"
+        "$<TARGET_FILE_DIR:deepstock>/resources/requirements-numpy2.txt"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/component_catalog.json"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/component_catalog.json"
+        "$<TARGET_FILE_DIR:deepstock>/resources/component_catalog.json"
     COMMAND ${CMAKE_COMMAND} -E make_directory
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/wallet"
+        "$<TARGET_FILE_DIR:deepstock>/resources/wallet"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/wallet/connect.html"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/wallet/connect.html"
+        "$<TARGET_FILE_DIR:deepstock>/resources/wallet/connect.html"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/wallet/swap.html"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/wallet/swap.html"
+        "$<TARGET_FILE_DIR:deepstock>/resources/wallet/swap.html"
     COMMAND ${CMAKE_COMMAND} -E make_directory
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/wallet/vendor"
+        "$<TARGET_FILE_DIR:deepstock>/resources/wallet/vendor"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/wallet/vendor"
-        "$<TARGET_FILE_DIR:FinceptTerminal>/resources/wallet/vendor"
+        "$<TARGET_FILE_DIR:deepstock>/resources/wallet/vendor"
     COMMENT "Copying requirements files to build output..."
 )
 
 # Bundle yt-dlp for dashboard YouTube playback on all platforms.
 # Override path with: -DFINCEPT_YTDLP_EXE=/abs/path/to/yt-dlp[.exe]
-set(FINCEPT_YTDLP_EXE "" CACHE FILEPATH "Path to yt-dlp executable to bundle with FinceptTerminal")
+set(FINCEPT_YTDLP_EXE "" CACHE FILEPATH "Path to yt-dlp executable to bundle with deepstock")
 # Default OFF so builds on CI / macOS / Linux succeed without yt-dlp pre-installed.
 # Set ON only for official release builds where yt-dlp must be present.
 option(FINCEPT_REQUIRE_BUNDLED_YTDLP "Fail configure if yt-dlp is missing" OFF)
@@ -2370,16 +2370,16 @@ if(FINCEPT_YTDLP_TO_BUNDLE AND EXISTS "${FINCEPT_YTDLP_TO_BUNDLE}")
         set(FINCEPT_YTDLP_OUTPUT_NAME "yt-dlp")
     endif()
 
-    add_custom_command(TARGET FinceptTerminal POST_BUILD
+    add_custom_command(TARGET deepstock POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${FINCEPT_YTDLP_TO_BUNDLE}"
-            "$<TARGET_FILE_DIR:FinceptTerminal>/${FINCEPT_YTDLP_OUTPUT_NAME}"
+            "$<TARGET_FILE_DIR:deepstock>/${FINCEPT_YTDLP_OUTPUT_NAME}"
         COMMENT "Copying yt-dlp for dashboard video playback..."
     )
 
     if(UNIX)
-        add_custom_command(TARGET FinceptTerminal POST_BUILD
-            COMMAND chmod +x "$<TARGET_FILE_DIR:FinceptTerminal>/${FINCEPT_YTDLP_OUTPUT_NAME}"
+        add_custom_command(TARGET deepstock POST_BUILD
+            COMMAND chmod +x "$<TARGET_FILE_DIR:deepstock>/${FINCEPT_YTDLP_OUTPUT_NAME}"
             COMMENT "Setting executable permission on bundled yt-dlp..."
         )
     endif()
@@ -2401,13 +2401,13 @@ endif()
 
 if(WIN32)
     # Windows: install exe + all DLLs beside it (windeployqt already copies them)
-    install(TARGETS FinceptTerminal RUNTIME DESTINATION "." COMPONENT core)
+    install(TARGETS deepstock RUNTIME DESTINATION "." COMPONENT core)
     install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scripts/"
             DESTINATION "scripts" COMPONENT scripts
             REGEX "(\\.deleted\\.|\\.pytest_cache|\\.benchmarks|__pycache__|\\.pyc$|\\.db$|\\.sqlite$|\\.sqlite3$|\\.bak$|\\.orig$)" EXCLUDE)
     # Requirements files — needed by PythonSetupManager at first run to install
     # Python packages. Must be deployed beside the exe so find_requirements_file()
-    # can locate them at C:/Program Files/FinceptTerminal/resources/*.txt.
+    # can locate them at C:/Program Files/deepstock/resources/*.txt.
     install(FILES
             "${CMAKE_CURRENT_SOURCE_DIR}/resources/requirements-numpy1.txt"
             "${CMAKE_CURRENT_SOURCE_DIR}/resources/requirements-numpy2.txt"
@@ -2415,21 +2415,21 @@ if(WIN32)
 
 elseif(APPLE)
     # macOS: install the .app bundle
-    install(TARGETS FinceptTerminal BUNDLE DESTINATION "." COMPONENT core)
+    install(TARGETS deepstock BUNDLE DESTINATION "." COMPONENT core)
     # Requirements files — deployed beside the .app so PythonSetupManager finds them
     install(FILES
             "${CMAKE_CURRENT_SOURCE_DIR}/resources/requirements-numpy1.txt"
             "${CMAKE_CURRENT_SOURCE_DIR}/resources/requirements-numpy2.txt"
-            DESTINATION "FinceptTerminal.app/Contents/Resources/resources" COMPONENT core)
+            DESTINATION "deepstock.app/Contents/Resources/resources" COMPONENT core)
 
 else()
     # Linux: FHS-compliant layout
-    install(TARGETS FinceptTerminal
+    install(TARGETS deepstock
             RUNTIME DESTINATION "bin" COMPONENT core)
 
     # Python analytics scripts
     install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/scripts/"
-            DESTINATION "share/fincept-terminal/scripts"
+            DESTINATION "share/deepstock/scripts"
             USE_SOURCE_PERMISSIONS COMPONENT scripts
             REGEX "(\\.deleted\\.|\\.pytest_cache|\\.benchmarks|__pycache__|\\.pyc$|\\.db$|\\.sqlite$|\\.sqlite3$|\\.bak$|\\.orig$)" EXCLUDE)
 
@@ -2438,18 +2438,18 @@ else()
     if(EXISTS "${_ICON_PNG}")
         install(FILES "${_ICON_PNG}"
                 DESTINATION "share/icons/hicolor/256x256/apps"
-                RENAME "fincept-terminal.png" COMPONENT core)
+                RENAME "deepstock.png" COMPONENT core)
     else()
         message(STATUS "Linux icon not found at ${_ICON_PNG} — "
                        "convert resources/fincept.ico to fincept.png for proper desktop integration")
     endif()
 
     # .desktop file
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/fincept-terminal.desktop"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/deepstock.desktop"
             DESTINATION "share/applications" COMPONENT core)
 
     # AppStream metadata
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/fincept-terminal.appdata.xml"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/packaging/linux/deepstock.appdata.xml"
             DESTINATION "share/metainfo" COMPONENT core)
 
     # yt-dlp (if bundled)
@@ -2467,7 +2467,7 @@ endif()
 #   cd build && cpack -G IFW -C Release
 #
 # Requires: Qt Installer Framework (binarycreator on PATH or in Qt install)
-# Output:   FinceptTerminal-<ver>-<platform>-setup.exe/.run/.app
+# Output:   deepstock-<ver>-<platform>-setup.exe/.run/.app
 
 option(FINCEPT_BUILD_INSTALLER "Generate QtIFW installer via CPack" OFF)
 
@@ -2475,7 +2475,7 @@ if(FINCEPT_BUILD_INSTALLER)
 
     # ── Windows: capture windeployqt output for the installer ────────────────
     if(WIN32 AND DEPLOY_QT)
-        install(DIRECTORY "$<TARGET_FILE_DIR:FinceptTerminal>/"
+        install(DIRECTORY "$<TARGET_FILE_DIR:deepstock>/"
                 DESTINATION "."
                 COMPONENT core
                 FILES_MATCHING
@@ -2496,7 +2496,7 @@ if(FINCEPT_BUILD_INSTALLER)
         # qt.conf — pins plugin/library paths relative to the exe. Without
         # this Qt uses hardcoded build-machine paths that don't exist on the
         # user's machine, producing "could not load the Qt platform plugin".
-        install(FILES "$<TARGET_FILE_DIR:FinceptTerminal>/qt.conf"
+        install(FILES "$<TARGET_FILE_DIR:deepstock>/qt.conf"
                 DESTINATION "." COMPONENT core OPTIONAL)
         # Qt plugin directories. OPTIONAL keeps the install non-fatal when
         # a plugin dir isn't produced by windeployqt on a given host (e.g.
@@ -2505,21 +2505,21 @@ if(FINCEPT_BUILD_INSTALLER)
                 platforms sqldrivers imageformats iconengines styles tls
                 multimedia texttospeech networkinformation platforminputcontexts
                 printsupport generic)
-            install(DIRECTORY "$<TARGET_FILE_DIR:FinceptTerminal>/${_plugin_dir}"
+            install(DIRECTORY "$<TARGET_FILE_DIR:deepstock>/${_plugin_dir}"
                     DESTINATION "." COMPONENT core OPTIONAL)
         endforeach()
     endif()
 
     # ── CPack general metadata ───────────────────────────────────────────────
-    set(CPACK_PACKAGE_NAME "FinceptTerminal")
-    set(CPACK_PACKAGE_VENDOR "Fincept Corporation")
+    set(CPACK_PACKAGE_NAME "deepstock")
+    set(CPACK_PACKAGE_VENDOR "DeepStock")
     set(CPACK_PACKAGE_VERSION "${CMAKE_PROJECT_VERSION}")
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-        "Professional financial intelligence terminal with AI analytics")
+        "deepstock A-share trading terminal demo")
     set(CPACK_PACKAGE_HOMEPAGE_URL
         "https://github.com/Fincept-Corporation/FinceptTerminal")
     set(CPACK_RESOURCE_FILE_LICENSE
-        "${CMAKE_CURRENT_SOURCE_DIR}/packaging/installer/packages/com.fincept.terminal.core/meta/license.txt")
+        "${CMAKE_CURRENT_SOURCE_DIR}/packaging/installer/packages/com.deepstock.terminal.core/meta/license.txt")
     set(CPACK_PACKAGE_ICON
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/fincept.ico")
 
@@ -2545,29 +2545,29 @@ if(FINCEPT_BUILD_INSTALLER)
     endif()
 
     # ── CPackIFW installer configuration ─────────────────────────────────────
-    set(CPACK_IFW_PACKAGE_TITLE "Fincept Terminal")
-    set(CPACK_IFW_PACKAGE_NAME "com.fincept.terminal")
-    set(CPACK_IFW_PACKAGE_PUBLISHER "Fincept Corporation")
-    set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "Fincept")
+    set(CPACK_IFW_PACKAGE_TITLE "deepstock")
+    set(CPACK_IFW_PACKAGE_NAME "com.deepstock.terminal")
+    set(CPACK_IFW_PACKAGE_PUBLISHER "DeepStock")
+    set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "deepstock")
     set(CPACK_IFW_PACKAGE_ICON
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/fincept.ico")
-    set(CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "FinceptMaintenanceTool")
+    set(CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "deepstockMaintenanceTool")
     set(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
     set(CPACK_IFW_PACKAGE_ALLOW_SPACE_IN_PATH ON)
     set(CPACK_IFW_PACKAGE_ALLOW_NON_ASCII_CHARACTERS ON)
 
     # Target directory defaults per platform
     if(WIN32)
-        set(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/FinceptTerminal")
+        set(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/deepstock")
     elseif(APPLE)
-        set(CPACK_IFW_TARGET_DIRECTORY "/Applications/FinceptTerminal")
+        set(CPACK_IFW_TARGET_DIRECTORY "/Applications/deepstock")
     else()
-        set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/FinceptTerminal")
+        set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/deepstock")
     endif()
 
     # Output file naming — arch-aware so the auto-updater manifest can point
     # at predictable, stable URLs. Scheme:
-    #   FinceptTerminal-<version>-<platform>-<arch>-setup
+    #   deepstock-<version>-<platform>-<arch>-setup
     # Platform: windows | linux | macos
     # Arch:     x64 | arm64
     # The CPack IFW generator appends .exe on Windows, .app on macOS, .run on Linux.
@@ -2579,7 +2579,7 @@ if(FINCEPT_BUILD_INSTALLER)
             set(_FINCEPT_PKG_ARCH "x64")
         endif()
         set(CPACK_PACKAGE_FILE_NAME
-            "FinceptTerminal-${CMAKE_PROJECT_VERSION}-windows-${_FINCEPT_PKG_ARCH}-setup")
+            "deepstock-${CMAKE_PROJECT_VERSION}-windows-${_FINCEPT_PKG_ARCH}-setup")
     elseif(APPLE)
         # On macOS CMAKE_OSX_ARCHITECTURES is the authoritative source
         # (it drives the actual binary slice). Fall back to host processor.
@@ -2598,7 +2598,7 @@ if(FINCEPT_BUILD_INSTALLER)
             set(_FINCEPT_PKG_ARCH "x64")
         endif()
         set(CPACK_PACKAGE_FILE_NAME
-            "FinceptTerminal-${CMAKE_PROJECT_VERSION}-macos-${_FINCEPT_PKG_ARCH}-setup")
+            "deepstock-${CMAKE_PROJECT_VERSION}-macos-${_FINCEPT_PKG_ARCH}-setup")
     else()
         if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
             set(_FINCEPT_PKG_ARCH "arm64")
@@ -2606,7 +2606,7 @@ if(FINCEPT_BUILD_INSTALLER)
             set(_FINCEPT_PKG_ARCH "x64")
         endif()
         set(CPACK_PACKAGE_FILE_NAME
-            "FinceptTerminal-${CMAKE_PROJECT_VERSION}-linux-${_FINCEPT_PKG_ARCH}-setup")
+            "deepstock-${CMAKE_PROJECT_VERSION}-linux-${_FINCEPT_PKG_ARCH}-setup")
     endif()
     message(STATUS "  Installer filename: ${CPACK_PACKAGE_FILE_NAME}")
 
@@ -2616,7 +2616,7 @@ if(FINCEPT_BUILD_INSTALLER)
 
     # ── Define install components ────────────────────────────────────────────
     cpack_add_component(core
-        DISPLAY_NAME "Fincept Terminal"
+        DISPLAY_NAME "deepstock"
         DESCRIPTION  "Core application executable and Qt runtime libraries"
         REQUIRED)
 
@@ -2627,27 +2627,27 @@ if(FINCEPT_BUILD_INSTALLER)
 
     # ── CPackIFW component configuration ─────────────────────────────────────
     cpack_ifw_configure_component(core
-        NAME "com.fincept.terminal.core"
+        NAME "com.deepstock.terminal.core"
         VERSION "${CMAKE_PROJECT_VERSION}"
-        SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/packaging/installer/packages/com.fincept.terminal.core/meta/installscript.qs"
-        LICENSES "AGPL-3.0" "${CMAKE_CURRENT_SOURCE_DIR}/packaging/installer/packages/com.fincept.terminal.core/meta/license.txt"
+        SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/packaging/installer/packages/com.deepstock.terminal.core/meta/installscript.qs"
+        LICENSES "AGPL-3.0" "${CMAKE_CURRENT_SOURCE_DIR}/packaging/installer/packages/com.deepstock.terminal.core/meta/license.txt"
         SORTING_PRIORITY 100
         DEFAULT TRUE
         FORCED_INSTALLATION)
 
     cpack_ifw_configure_component(scripts
-        NAME "com.fincept.terminal.scripts"
+        NAME "com.deepstock.terminal.scripts"
         VERSION "${CMAKE_PROJECT_VERSION}"
         SORTING_PRIORITY 50
         DEFAULT TRUE
-        DEPENDS "com.fincept.terminal.core")
+        DEPENDS "com.deepstock.terminal.core")
 
 endif() # FINCEPT_BUILD_INSTALLER
 
 # ── Build configuration summary ──────────────────────────────────────────────
 message(STATUS "")
 message(STATUS "============================================================")
-message(STATUS "  Fincept Terminal ${CMAKE_PROJECT_VERSION} — build summary")
+message(STATUS "  deepstock ${CMAKE_PROJECT_VERSION} — build summary")
 message(STATUS "============================================================")
 message(STATUS "  Qt version        : ${Qt6Core_VERSION}")
 message(STATUS "  Build type        : ${CMAKE_BUILD_TYPE}")

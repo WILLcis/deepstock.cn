@@ -162,7 +162,7 @@ WindowFrame::WindowFrame(int window_id, QWidget* parent) : QMainWindow(parent), 
 
     // Show active profile in title bar when using a non-default profile
     const QString profile = ProfileManager::instance().active();
-    setWindowTitle(profile == "default" ? "Fincept Terminal" : QString("Fincept Terminal [%1]").arg(profile));
+    setWindowTitle(profile == "default" ? "deepstock" : QString("deepstock [%1]").arg(profile));
     // Load icon from the embedded Windows resource (IDI_ICON1 in app.rc).
     // Falls back to the .ico beside the executable on other platforms.
     QIcon app_icon;
@@ -530,7 +530,7 @@ WindowFrame::WindowFrame(int window_id, QWidget* parent) : QMainWindow(parent), 
                 {"panel_portfolio", {"Portfolio", "portfolio"}},
                 {"panel_markets", {"Markets", "markets"}},
                 {"panel_crypto", {"Crypto Trading", "crypto_trading"}},
-                {"panel_equity", {"Equity Trading", "equity_trading"}},
+                {"panel_equity", {QString::fromUtf8("A股交易"), "equity_trading"}},
                 {"panel_algo", {"Algo Trading", "algo_trading"}},
                 {"panel_research", {"Equity Research", "equity_research"}},
                 {"panel_economics", {"Economics", "economics"}},
@@ -875,6 +875,7 @@ void WindowFrame::setup_auth_screens() {
     // ── Auth navigation ──────────────────────────────────────────────────────
     connect(login, &screens::LoginScreen::navigate_register, this, &WindowFrame::show_register);
     connect(login, &screens::LoginScreen::navigate_forgot_password, this, &WindowFrame::show_forgot_password);
+    connect(login, &screens::LoginScreen::continue_locally, this, &WindowFrame::continue_locally);
     connect(reg, &screens::RegisterScreen::navigate_login, this, &WindowFrame::show_login);
     connect(forgot, &screens::ForgotPasswordScreen::navigate_login, this, &WindowFrame::show_login);
     connect(pricing, &screens::PricingScreen::navigate_dashboard, this, [this]() {
@@ -1204,6 +1205,17 @@ void WindowFrame::show_register() {
 void WindowFrame::show_forgot_password() {
     enter_auth_stack(2);
 }
+void WindowFrame::continue_locally() {
+    auth::InactivityGuard::instance().set_enabled(false);
+    auth::InactivityGuard::instance().set_terminal_locked(false);
+    locked_ = false;
+    pin_gate_cleared_ = true;
+    set_shell_visible(true);
+    stack_->setCurrentIndex(1);
+    WorkspaceManager::instance().load_last_workspace();
+    dock_router_->navigate("dashboard");
+    LOG_INFO("WindowFrame", "Continuing in local mode without account authentication");
+}
 void WindowFrame::show_pricing() {
     enter_auth_stack(3);
 }
@@ -1379,13 +1391,13 @@ void WindowFrame::set_shell_visible(bool visible) {
     if (!visible) {
         // Reset title to plain app name — no screen suffix while on auth screens
         const QString profile = ProfileManager::instance().active();
-        setWindowTitle(profile == "default" ? "Fincept Terminal"
-                                            : QString("Fincept Terminal [%1]").arg(profile));
+        setWindowTitle(profile == "default" ? "deepstock"
+                                            : QString("deepstock [%1]").arg(profile));
     }
 }
 
 void WindowFrame::update_window_title() {
-    QString title = "Fincept Terminal";
+    QString title = "deepstock";
 
     const QString profile = ProfileManager::instance().active();
     if (profile != "default")

@@ -198,7 +198,7 @@ void EquityTradingScreen::setup_ui() {
     cmd_layout->setSpacing(6);
 
     // Account button + menu (replaces broker_btn_)
-    account_btn_ = new QPushButton("NO ACCOUNT");
+    account_btn_ = new QPushButton(QString::fromUtf8("模拟账户"));
     account_btn_->setObjectName("eqBrokerBtn");
     account_btn_->setFixedHeight(22);
     account_btn_->setCursor(Qt::PointingHandCursor);
@@ -212,7 +212,7 @@ void EquityTradingScreen::setup_ui() {
     cmd_layout->addWidget(sep);
 
     // Exchange label
-    exchange_label_ = new QLabel("NSE");
+    exchange_label_ = new QLabel("SSE");
     exchange_label_->setObjectName("eqExchangeLabel");
     cmd_layout->addWidget(exchange_label_);
 
@@ -222,7 +222,7 @@ void EquityTradingScreen::setup_ui() {
     cmd_layout->addWidget(sep2);
 
     // Symbol input
-    symbol_input_ = new QLineEdit("RELIANCE");
+    symbol_input_ = new QLineEdit("600519");
     symbol_input_->setObjectName("eqSymbolInput");
     symbol_input_->setFixedWidth(120);
     symbol_input_->setFixedHeight(22);
@@ -249,20 +249,20 @@ void EquityTradingScreen::setup_ui() {
     cmd_layout->addWidget(clock_label_);
 
     // Connection status indicator (aggregate)
-    conn_label_ = new QLabel("○ NO ACCOUNTS");
+    conn_label_ = new QLabel(QString::fromUtf8("○ 未连接券商"));
     conn_label_->setObjectName("eqConnLabel");
     conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::TEXT_TERTIARY()));
     cmd_layout->addWidget(conn_label_);
 
     // Accounts management button (replaces api_btn_)
-    accounts_btn_ = new QPushButton("ACCOUNTS");
+    accounts_btn_ = new QPushButton(QString::fromUtf8("账户"));
     accounts_btn_->setObjectName("eqApiBtn");
     accounts_btn_->setFixedHeight(22);
     accounts_btn_->setCursor(Qt::PointingHandCursor);
     cmd_layout->addWidget(accounts_btn_);
 
     // Mode button (per-account mode toggle)
-    mode_btn_ = new QPushButton("PAPER");
+    mode_btn_ = new QPushButton(QString::fromUtf8("模拟"));
     mode_btn_->setObjectName("eqModeBtn");
     mode_btn_->setProperty("mode", "paper");
     mode_btn_->setCheckable(true);
@@ -514,7 +514,7 @@ void EquityTradingScreen::update_account_menu() {
     const auto accounts = AccountManager::instance().active_accounts();
 
     if (accounts.isEmpty()) {
-        account_btn_->setText("NO ACCOUNT");
+        account_btn_->setText(QString::fromUtf8("模拟账户"));
         return;
     }
 
@@ -543,7 +543,7 @@ void EquityTradingScreen::update_connection_status() {
             ++connected;
     }
     if (accounts.isEmpty()) {
-        conn_label_->setText("○ NO ACCOUNTS");
+        conn_label_->setText(QString::fromUtf8("○ 未连接券商"));
         conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::TEXT_TERTIARY()));
     } else if (connected == accounts.size()) {
         conn_label_->setText(QString("● %1/%2 CONNECTED").arg(connected).arg(accounts.size()));
@@ -702,7 +702,7 @@ void EquityTradingScreen::on_account_changed(const QString& account_id) {
     // Update mode button to reflect this account's trading mode
     const bool is_live = (account.trading_mode == "live");
     mode_btn_->setChecked(is_live);
-    mode_btn_->setText(is_live ? "LIVE" : "PAPER");
+    mode_btn_->setText(is_live ? QString::fromUtf8("实盘") : QString::fromUtf8("模拟"));
     mode_btn_->setProperty("mode", is_live ? "live" : "paper");
     mode_btn_->style()->unpolish(mode_btn_);
     mode_btn_->style()->polish(mode_btn_);
@@ -799,7 +799,7 @@ void EquityTradingScreen::on_mode_toggled() {
         return;
 
     const bool is_live = mode_btn_->isChecked();
-    mode_btn_->setText(is_live ? "LIVE" : "PAPER");
+    mode_btn_->setText(is_live ? QString::fromUtf8("实盘") : QString::fromUtf8("模拟"));
     mode_btn_->setProperty("mode", is_live ? "live" : "paper");
     mode_btn_->style()->unpolish(mode_btn_);
     mode_btn_->style()->polish(mode_btn_);
@@ -837,7 +837,7 @@ void EquityTradingScreen::handle_token_expired(const QString& account_id) {
     if (!token_expired_shown_.compare_exchange_strong(expected, true))
         return;
 
-    conn_label_->setText(QString::fromUtf8("\xe2\x9a\xa0 TOKEN EXPIRED — click ACCOUNTS"));
+    conn_label_->setText(QString::fromUtf8("! 授权已过期，请打开账户"));
     conn_label_->setStyleSheet(QString("color: %1; font-size: 10px; font-weight: 700;").arg(ui::colors::NEGATIVE()));
     LOG_WARN(TAG, QString("Access token expired for account %1 — user must re-authenticate").arg(account_id));
     update_connection_status();
@@ -890,7 +890,7 @@ void EquityTradingScreen::on_accounts_clicked() {
 
 void EquityTradingScreen::on_order_submitted(const UnifiedOrder& order) {
     if (focused_account_id_.isEmpty()) {
-        order_entry_->show_order_status("No account selected — add one via ACCOUNTS", false);
+        order_entry_->show_order_status(QString::fromUtf8("未选择账户，请先打开账户面板"), false);
         return;
     }
 
@@ -899,7 +899,7 @@ void EquityTradingScreen::on_order_submitted(const UnifiedOrder& order) {
     if (account.trading_mode == "paper") {
         const QString portfolio_id = account.paper_portfolio_id;
         if (portfolio_id.isEmpty()) {
-            order_entry_->show_order_status("No paper portfolio for this account", false);
+            order_entry_->show_order_status(QString::fromUtf8("该账户没有模拟组合"), false);
             return;
         }
 
@@ -924,7 +924,7 @@ void EquityTradingScreen::on_order_submitted(const UnifiedOrder& order) {
             stop_opt = order.stop_price;
 
         if (order.order_type == OrderType::Market && !price_opt) {
-            order_entry_->show_order_status("Price not available yet — wait for quotes to load", false);
+            order_entry_->show_order_status(QString::fromUtf8("暂无可用价格，请等待行情加载"), false);
             return;
         }
 
@@ -934,18 +934,18 @@ void EquityTradingScreen::on_order_submitted(const UnifiedOrder& order) {
             if (order.order_type == OrderType::Market) {
                 double fill_price = current_price_ > 0 ? current_price_ : (order.price > 0 ? order.price : 0.0);
                 if (fill_price <= 0) {
-                    order_entry_->show_order_status("No price available for fill", false);
+                    order_entry_->show_order_status(QString::fromUtf8("暂无成交价格"), false);
                     return;
                 }
                 pt_fill_order(pt_order.id, fill_price);
                 order_entry_->show_order_status(
-                    QString("Paper order filled: %1 @ %2").arg(order.symbol).arg(fill_price, 0, 'f', 2), true);
+                    QString::fromUtf8("模拟成交：%1 @ %2").arg(order.symbol).arg(fill_price, 0, 'f', 2), true);
             } else {
                 OrderMatcher::instance().add_order(pt_order);
-                order_entry_->show_order_status(QString("Paper order queued: %1").arg(order.symbol), true);
+                order_entry_->show_order_status(QString::fromUtf8("模拟委托已提交：%1").arg(order.symbol), true);
             }
         } catch (const std::exception& e) {
-            order_entry_->show_order_status(QString("Order failed: %1").arg(e.what()), false);
+            order_entry_->show_order_status(QString::fromUtf8("下单失败：%1").arg(e.what()), false);
             return;
         }
 
@@ -1071,6 +1071,7 @@ void EquityTradingScreen::async_modify_order(const QString& order_id, double qty
 // symbols match the format the portfolio screen's price engine (yfinance) expects.
 static QString yfinance_symbol_for(const QString& symbol, const QString& exchange) {
     static const QHash<QString, QString> suffix_map = {
+        {"SSE", ".SS"},        {"SZSE", ".SZ"}, {"BSE-CN", ".BJ"},
         {"NSE", ".NS"},        {"BSE", ".BO"},  {"HKEX", ".HK"}, {"TSE", ".T"},
         {"KRX", ".KS"},        {"SGX", ".SI"},  {"ASX", ".AX"},  {"IDX", ".JK"},
         {"MYX", ".KL"},        {"SET", ".BK"},  {"PSE", ".PS"},  {"XETR", ".DE"},
@@ -1089,7 +1090,7 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     if (holdings.isEmpty())
         return;
     if (focused_account_id_.isEmpty()) {
-        QMessageBox::warning(this, "Import Holdings", "No account selected.");
+        QMessageBox::warning(this, QString::fromUtf8("导入持仓"), QString::fromUtf8("未选择账户。"));
         return;
     }
     const auto account = trading::AccountManager::instance().get_account(focused_account_id_);
@@ -1097,21 +1098,20 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     auto* broker = trading::BrokerRegistry::instance().get(broker_id);
     const QString default_currency = (broker ? broker->profile().currency : QStringLiteral("USD"));
     const QString suggested_name = account.display_name.isEmpty()
-                                       ? QString("%1 Holdings").arg(broker_id.toUpper())
-                                       : QString("%1 - Holdings").arg(account.display_name);
+        ? QString::fromUtf8("%1 持仓").arg(broker_id.toUpper())
+                                       : QString::fromUtf8("%1 - 持仓").arg(account.display_name);
 
     QDialog dlg(this);
-    dlg.setWindowTitle("Import holdings into portfolio");
+    dlg.setWindowTitle(QString::fromUtf8("导入持仓到组合"));
     dlg.setMinimumSize(780, 560);
 
     auto* v = new QVBoxLayout(&dlg);
     v->setContentsMargins(16, 16, 16, 16);
     v->setSpacing(10);
 
-    auto* info = new QLabel(QString("Importing <b>%1</b> holdings from <b>%2</b>. "
-                                    "Tickers are auto-mapped to Yahoo Finance format "
-                                    "(NSE→.NS, BSE→.BO). Edit the <i>Yahoo Ticker</i> column "
-                                    "if any symbol needs a manual override.")
+    auto* info = new QLabel(QString::fromUtf8("正在从 <b>%2</b> 导入 <b>%1</b> 条持仓。"
+                                    "股票代码会自动映射为 Yahoo Finance 格式 "
+                                    "(SSE→.SS，SZSE→.SZ，BSE-CN→.BJ)。如需调整，可直接编辑 <i>Yahoo 代码</i> 列。")
                                 .arg(holdings.size())
                                 .arg(account.display_name.isEmpty() ? broker_id.toUpper()
                                                                     : account.display_name));
@@ -1120,8 +1120,8 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     v->addWidget(info);
 
     // ── Portfolio target selection ────────────────────────────────────────
-    auto* mode_new = new QRadioButton("Create a new portfolio");
-    auto* mode_existing = new QRadioButton("Add to existing portfolio");
+    auto* mode_new = new QRadioButton(QString::fromUtf8("创建新组合"));
+    auto* mode_existing = new QRadioButton(QString::fromUtf8("加入已有组合"));
     mode_new->setChecked(true);
 
     auto* mode_row = new QHBoxLayout;
@@ -1135,17 +1135,17 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     new_form->setContentsMargins(18, 0, 0, 0);
     auto* name_input = new QLineEdit(suggested_name);
     auto* currency_input = new QLineEdit(default_currency);
-    new_form->addRow("Name:", name_input);
-    new_form->addRow("Currency:", currency_input);
+    new_form->addRow(QString::fromUtf8("名称："), name_input);
+    new_form->addRow(QString::fromUtf8("币种："), currency_input);
     v->addWidget(new_row);
 
     auto* existing_combo = new QComboBox;
     existing_combo->setEnabled(false);
-    existing_combo->addItem("Loading portfolios...");
+    existing_combo->addItem(QString::fromUtf8("正在加载组合..."));
     auto* existing_row = new QWidget;
     auto* existing_form = new QFormLayout(existing_row);
     existing_form->setContentsMargins(18, 0, 0, 0);
-    existing_form->addRow("Portfolio:", existing_combo);
+    existing_form->addRow(QString::fromUtf8("组合："), existing_combo);
     existing_row->setVisible(false);
     v->addWidget(existing_row);
 
@@ -1153,7 +1153,8 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     auto* table = new QTableWidget;
     table->setColumnCount(6);
     table->setHorizontalHeaderLabels(
-        {"Import", "Broker Symbol", "Exchange", "Yahoo Ticker (edit)", "Quantity", "Avg Price"});
+        {QString::fromUtf8("导入"), QString::fromUtf8("券商代码"), QString::fromUtf8("交易所"),
+         QString::fromUtf8("Yahoo 代码（可编辑）"), QString::fromUtf8("数量"), QString::fromUtf8("成本价")});
     table->setRowCount(holdings.size());
     table->verticalHeader()->setVisible(false);
     table->setSelectionMode(QAbstractItemView::NoSelection);
@@ -1206,8 +1207,8 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
 
     // Select/Deselect all helpers
     auto* select_row = new QHBoxLayout;
-    auto* select_all_btn = new QPushButton("Select all");
-    auto* deselect_all_btn = new QPushButton("Deselect all");
+    auto* select_all_btn = new QPushButton(QString::fromUtf8("全选"));
+    auto* deselect_all_btn = new QPushButton(QString::fromUtf8("全不选"));
     select_row->addWidget(select_all_btn);
     select_row->addWidget(deselect_all_btn);
     select_row->addStretch();
@@ -1225,7 +1226,8 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     QObject::connect(deselect_all_btn, &QPushButton::clicked, &dlg, [set_all_checked]() { set_all_checked(false); });
 
     auto* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttons->button(QDialogButtonBox::Ok)->setText("IMPORT");
+    buttons->button(QDialogButtonBox::Ok)->setText(QString::fromUtf8("导入"));
+    buttons->button(QDialogButtonBox::Cancel)->setText(QString::fromUtf8("取消"));
     v->addWidget(buttons);
 
     auto sync_mode = [&]() {
@@ -1247,7 +1249,7 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
             if (!combo_guard) return;
             combo_guard->clear();
             if (list.isEmpty()) {
-                combo_guard->addItem("(no portfolios yet)");
+                combo_guard->addItem(QString::fromUtf8("(暂无组合)"));
                 combo_guard->setEnabled(false);
                 if (existing_guard) existing_guard->setEnabled(false);
             } else {
@@ -1286,7 +1288,7 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
         rows.push_back({yf, holdings[r].quantity, holdings[r].avg_price});
     }
     if (rows.isEmpty()) {
-        QMessageBox::information(this, "Import Holdings", "Nothing selected to import.");
+        QMessageBox::information(this, QString::fromUtf8("导入持仓"), QString::fromUtf8("没有选择要导入的持仓。"));
         return;
     }
 
@@ -1303,7 +1305,7 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     if (mode_new->isChecked()) {
         const QString name = name_input->text().trimmed();
         if (name.isEmpty()) {
-            QMessageBox::warning(this, "Import Holdings", "Portfolio name is required.");
+            QMessageBox::warning(this, QString::fromUtf8("导入持仓"), QString::fromUtf8("请输入组合名称。"));
             return;
         }
         const QString currency = currency_input->text().trimmed().isEmpty()
@@ -1318,8 +1320,8 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
                                 return;
                             QObject::disconnect(*once);
                             do_add_assets(p.id);
-                            QMessageBox::information(self, "Import Holdings",
-                                                     QString("Imported %1 holdings into portfolio \"%2\".")
+                            QMessageBox::information(self, QString::fromUtf8("导入持仓"),
+                                                     QString::fromUtf8("已导入 %1 条持仓到组合“%2”。")
                                                          .arg(count)
                                                          .arg(p.name));
                         });
@@ -1327,12 +1329,12 @@ void EquityTradingScreen::on_import_holdings_requested(const QVector<trading::Br
     } else {
         const QString pid = existing_combo->currentData().toString();
         if (pid.isEmpty()) {
-            QMessageBox::warning(this, "Import Holdings", "Select a portfolio first.");
+            QMessageBox::warning(this, QString::fromUtf8("导入持仓"), QString::fromUtf8("请先选择一个组合。"));
             return;
         }
         do_add_assets(pid);
-        QMessageBox::information(this, "Import Holdings",
-                                 QString("Imported %1 holdings.").arg(rows.size()));
+        QMessageBox::information(this, QString::fromUtf8("导入持仓"),
+                                 QString::fromUtf8("已导入 %1 条持仓。").arg(rows.size()));
     }
 }
 

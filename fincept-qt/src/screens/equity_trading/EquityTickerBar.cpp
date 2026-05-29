@@ -28,27 +28,27 @@ EquityTickerBar::EquityTickerBar(QWidget* parent) : QWidget(parent) {
     change_label_->setObjectName("eqChange");
     layout->addWidget(change_label_);
 
-    bid_label_ = new QLabel("B:--");
+    bid_label_ = new QLabel(QString::fromUtf8("买一:--"));
     bid_label_->setObjectName("eqBid");
     layout->addWidget(bid_label_);
 
-    ask_label_ = new QLabel("A:--");
+    ask_label_ = new QLabel(QString::fromUtf8("卖一:--"));
     ask_label_->setObjectName("eqAsk");
     layout->addWidget(ask_label_);
 
-    spread_label_ = new QLabel("S:--");
+    spread_label_ = new QLabel(QString::fromUtf8("价差:--"));
     spread_label_->setObjectName("eqSpreadInline");
     layout->addWidget(spread_label_);
 
-    high_label_ = new QLabel("H:--");
+    high_label_ = new QLabel(QString::fromUtf8("高:--"));
     high_label_->setObjectName("eqStatLabel");
     layout->addWidget(high_label_);
 
-    low_label_ = new QLabel("L:--");
+    low_label_ = new QLabel(QString::fromUtf8("低:--"));
     low_label_->setObjectName("eqStatLabel");
     layout->addWidget(low_label_);
 
-    volume_label_ = new QLabel("Vol:--");
+    volume_label_ = new QLabel(QString::fromUtf8("量:--"));
     volume_label_->setObjectName("eqStatLabel");
     layout->addWidget(volume_label_);
 
@@ -81,25 +81,25 @@ void EquityTickerBar::update_quote(double ltp, double change, double change_pct,
     }
 
     if (bid > 0)
-        bid_label_->setText(QString("B:%1").arg(bid, 0, 'f', 2));
+        bid_label_->setText(QString::fromUtf8("买一:%1").arg(bid, 0, 'f', 2));
     if (ask > 0)
-        ask_label_->setText(QString("A:%1").arg(ask, 0, 'f', 2));
+        ask_label_->setText(QString::fromUtf8("卖一:%1").arg(ask, 0, 'f', 2));
     if (bid > 0 && ask > 0)
-        spread_label_->setText(QString("S:%1").arg(std::abs(ask - bid), 0, 'f', 2));
+        spread_label_->setText(QString::fromUtf8("价差:%1").arg(std::abs(ask - bid), 0, 'f', 2));
 
-    high_label_->setText(QString("H:%1").arg(high, 0, 'f', 2));
-    low_label_->setText(QString("L:%1").arg(low, 0, 'f', 2));
+    high_label_->setText(QString::fromUtf8("高:%1").arg(high, 0, 'f', 2));
+    low_label_->setText(QString::fromUtf8("低:%1").arg(low, 0, 'f', 2));
 
     if (volume >= 1e9)
-        volume_label_->setText(QString("Vol:%1B").arg(volume / 1e9, 0, 'f', 2));
+        volume_label_->setText(QString::fromUtf8("量:%1B").arg(volume / 1e9, 0, 'f', 2));
     else if (volume >= 1e7)
-        volume_label_->setText(QString("Vol:%1Cr").arg(volume / 1e7, 0, 'f', 2));
+        volume_label_->setText(QString::fromUtf8("量:%1Cr").arg(volume / 1e7, 0, 'f', 2));
     else if (volume >= 1e5)
-        volume_label_->setText(QString("Vol:%1L").arg(volume / 1e5, 0, 'f', 2));
+        volume_label_->setText(QString::fromUtf8("量:%1L").arg(volume / 1e5, 0, 'f', 2));
     else if (volume >= 1e3)
-        volume_label_->setText(QString("Vol:%1K").arg(volume / 1e3, 0, 'f', 1));
+        volume_label_->setText(QString::fromUtf8("量:%1K").arg(volume / 1e3, 0, 'f', 1));
     else
-        volume_label_->setText(QString("Vol:%1").arg(volume, 0, 'f', 0));
+        volume_label_->setText(QString::fromUtf8("量:%1").arg(volume, 0, 'f', 0));
 }
 
 } // namespace fincept::screens::equity

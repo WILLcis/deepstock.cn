@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=deepstock
+GenericName=A-share Trading Terminal
+Comment=deepstock A-share market data, watchlist, depth, orders, and portfolio demo
+Exec=deepstock %U
+Icon=deepstock
+Terminal=false
+StartupWMClass=deepstock
+StartupNotify=true
+Categories=Finance;Office;Science;
+MimeType=application/x-deepstock;
+Keywords=finance;trading;stocks;A-share;portfolio;analytics;markets;
+X-GNOME-FullName=deepstock

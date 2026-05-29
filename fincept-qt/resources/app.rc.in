@@ -22,13 +22,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName",      "Fincept Corporation"
-            VALUE "FileDescription",  "Fincept Terminal - Financial Intelligence Platform"
+            VALUE "CompanyName",      "DeepStock"
+            VALUE "FileDescription",  "deepstock - A-share Trading Terminal"
             VALUE "FileVersion",      "@CMAKE_PROJECT_VERSION@"
-            VALUE "InternalName",     "FinceptTerminal"
-            VALUE "LegalCopyright",   "Copyright (C) 2025 Fincept Corporation. AGPL-3.0-or-later."
-            VALUE "OriginalFilename", "FinceptTerminal.exe"
-            VALUE "ProductName",      "Fincept Terminal"
+            VALUE "InternalName",     "deepstock"
+            VALUE "LegalCopyright",   "Copyright (C) 2025 DeepStock. AGPL-3.0-or-later."
+            VALUE "OriginalFilename", "deepstock.exe"
+            VALUE "ProductName",      "deepstock"
             VALUE "ProductVersion",   "@CMAKE_PROJECT_VERSION@"
         END
     END

@@ -22,11 +22,11 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent) {
         return l;
     };
 
-    hl->addWidget(mk("FINCEPT", "navBrand"));
-    hl->addWidget(mk("TERMINAL", "navTitle"));
+    hl->addWidget(mk("deepstock", "navBrand"));
+    hl->addWidget(mk(QString::fromUtf8(" A股交易终端"), "navTitle"));
     hl->addWidget(mk("   ", "navSpacer"));
     hl->addWidget(mk("\xe2\x97\x8f", "navLiveDot"));
-    hl->addWidget(mk(" LIVE", "navLive"));
+    hl->addWidget(mk(QString::fromUtf8(" 行情在线"), "navLive"));
     hl->addStretch();
     clock_label_ = mk("", "navClock");
     hl->addWidget(clock_label_);
@@ -41,7 +41,7 @@ NavigationBar::NavigationBar(QWidget* parent) : QWidget(parent) {
     hl->addWidget(plan_label_);
     hl->addWidget(mk("  |  ", "navSep"));
 
-    logout_btn_ = new QPushButton("LOGOUT");
+    logout_btn_ = new QPushButton(QString::fromUtf8("退出"));
     logout_btn_->setFixedHeight(24);
     logout_btn_->setCursor(Qt::PointingHandCursor);
     logout_btn_->setObjectName("navLogout");

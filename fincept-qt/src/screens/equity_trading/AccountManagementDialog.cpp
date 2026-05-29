@@ -50,7 +50,7 @@ static QLabel* make_field_label(const QString& text) {
 
 AccountManagementDialog::AccountManagementDialog(QWidget* parent)
     : QDialog(parent) {
-    setWindowTitle("Manage Broker Accounts");
+    setWindowTitle(QString::fromUtf8("管理交易账户"));
     setMinimumSize(700, 480);
     setStyleSheet(QString("QDialog { background: %1; color: %2; }"
                           "QLabel#fieldLabel { color: %3; font-size: 11px; font-weight: 700; }"
@@ -85,7 +85,7 @@ void AccountManagementDialog::setup_ui() {
     auto* left = new QVBoxLayout;
     left->setSpacing(6);
 
-    auto* list_label = new QLabel("ACCOUNTS");
+    auto* list_label = new QLabel(QString::fromUtf8("账户"));
     list_label->setObjectName("fieldLabel");
     left->addWidget(list_label);
 
@@ -105,18 +105,18 @@ void AccountManagementDialog::setup_ui() {
     add_row->addWidget(broker_picker_, 1);
 
     display_name_input_ = new QLineEdit;
-    display_name_input_->setPlaceholderText("Account name...");
+    display_name_input_->setPlaceholderText(QString::fromUtf8("账户名称..."));
     add_row->addWidget(display_name_input_, 1);
     left->addLayout(add_row);
 
     auto* btn_row = new QHBoxLayout;
-    add_btn_ = new QPushButton("+ ADD");
+    add_btn_ = new QPushButton(QString::fromUtf8("+ 添加"));
     add_btn_->setStyleSheet(QString("QPushButton { background: %1; color: %2; }")
                                 .arg(colors::AMBER(), colors::BG_BASE()));
     connect(add_btn_, &QPushButton::clicked, this, &AccountManagementDialog::on_add_account);
     btn_row->addWidget(add_btn_);
 
-    remove_btn_ = new QPushButton("REMOVE");
+    remove_btn_ = new QPushButton(QString::fromUtf8("删除"));
     remove_btn_->setStyleSheet(QString("QPushButton { background: %1; color: %2; }")
                                    .arg(colors::NEGATIVE(), colors::TEXT_PRIMARY()));
     remove_btn_->setEnabled(false);
@@ -132,7 +132,7 @@ void AccountManagementDialog::setup_ui() {
     // Empty page (no selection)
     empty_page_ = new QWidget(this);
     auto* empty_layout = new QVBoxLayout(empty_page_);
-    auto* empty_label = new QLabel("Select an account to configure credentials");
+    auto* empty_label = new QLabel(QString::fromUtf8("选择一个账户来配置交易凭证"));
     empty_label->setAlignment(Qt::AlignCenter);
     empty_label->setStyleSheet(QString("color: %1; font-size: 12px;").arg(colors::TEXT_TERTIARY()));
     empty_layout->addWidget(empty_label);
@@ -163,13 +163,13 @@ void AccountManagementDialog::setup_ui() {
 
     // Action buttons
     auto* action_row = new QHBoxLayout;
-    rename_btn_ = new QPushButton("RENAME");
+    rename_btn_ = new QPushButton(QString::fromUtf8("重命名"));
     rename_btn_->setStyleSheet(QString("QPushButton { background: %1; color: %2; }")
                                    .arg(colors::BG_RAISED(), colors::TEXT_PRIMARY()));
     connect(rename_btn_, &QPushButton::clicked, this, &AccountManagementDialog::on_rename_account);
     action_row->addWidget(rename_btn_);
 
-    connect_btn_ = new QPushButton("CONNECT");
+    connect_btn_ = new QPushButton(QString::fromUtf8("连接"));
     connect_btn_->setStyleSheet(QString("QPushButton { background: %1; color: %2; }")
                                     .arg(colors::AMBER(), colors::BG_BASE()));
     connect(connect_btn_, &QPushButton::clicked, this, &AccountManagementDialog::on_connect_account);

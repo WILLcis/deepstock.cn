@@ -17,12 +17,11 @@ enum class BottomTab { Positions, Holdings, Orders, Funds, Stats };
 
 enum class TradingMode { Paper, Live };
 
-// ── Default Watchlist (NIFTY 50 subset) ────────────────────────────────────
+// ── Default Watchlist (A-share demo subset) ─────────────────────────────────
 
 inline const QStringList DEFAULT_WATCHLIST = {
-    "HDFCBANK", "ICICIBANK", "SBIN",     "KOTAKBANK", "AXISBANK",   "TCS",        "INFY",
-    "WIPRO",    "HCLTECH",   "RELIANCE", "TATASTEEL", "MARUTI",     "BAJFINANCE", "HINDUNILVR",
-    "ITC",      "SUNPHARMA", "DRREDDY",  "LT",        "BHARTIARTL", "TITAN",
+    "600519", "601398", "600036", "601318", "600900", "600276", "601988", "601857", "600030", "600887",
+    "000001", "000333", "000858", "002415", "002594", "300750", "300760", "300059", "002475", "000651",
 };
 
 inline const QStringList US_WATCHLIST = {
@@ -31,7 +30,7 @@ inline const QStringList US_WATCHLIST = {
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-inline constexpr double DEFAULT_PAPER_BALANCE = 1000000.0; // 10 Lakh INR
+inline constexpr double DEFAULT_PAPER_BALANCE = 1000000.0; // A-share demo CNY balance
 inline constexpr int OHLCV_FETCH_COUNT = 200;
 inline constexpr int QUOTE_POLL_MS = 5000;
 inline constexpr int PORTFOLIO_POLL_MS = 3000;
@@ -100,6 +99,8 @@ inline QColor ROW_ALT() {
 // ── Exchange → Currency mapping ────────────────────────────────────────────
 
 inline QString exchange_currency(const QString& exchange) {
+    if (exchange == "SSE" || exchange == "SZSE" || exchange == "BSE-CN")
+        return "CNY";
     if (exchange == "NSE" || exchange == "BSE" || exchange == "NFO" || exchange == "MCX" || exchange == "CDS")
         return "INR";
     if (exchange == "NYSE" || exchange == "NASDAQ" || exchange == "AMEX" || exchange == "CBOE")
@@ -119,6 +120,8 @@ inline QString currency_symbol(const QString& currency) {
     if (currency == "EUR")
         return QString::fromUtf8("\u20AC");
     if (currency == "JPY")
+        return QString::fromUtf8("\u00A5");
+    if (currency == "CNY")
         return QString::fromUtf8("\u00A5");
     return "$";
 }

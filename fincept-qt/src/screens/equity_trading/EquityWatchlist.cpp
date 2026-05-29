@@ -27,7 +27,7 @@ EquityWatchlist::EquityWatchlist(QWidget* parent) : QWidget(parent) {
     auto* h_layout = new QHBoxLayout(header);
     h_layout->setContentsMargins(8, 0, 8, 0);
 
-    auto* title = new QLabel("WATCHLIST");
+    auto* title = new QLabel(QString::fromUtf8("自选股"));
     title->setObjectName("eqWatchlistTitle");
     h_layout->addWidget(title);
     h_layout->addStretch();
@@ -41,7 +41,7 @@ EquityWatchlist::EquityWatchlist(QWidget* parent) : QWidget(parent) {
     // Search / filter
     filter_edit_ = new QLineEdit;
     filter_edit_->setObjectName("eqWatchlistSearch");
-    filter_edit_->setPlaceholderText("Filter...");
+    filter_edit_->setPlaceholderText(QString::fromUtf8("筛选股票..."));
     filter_edit_->setFixedHeight(26);
     connect(filter_edit_, &QLineEdit::textChanged, this, &EquityWatchlist::on_filter_changed);
     layout->addWidget(filter_edit_);
@@ -55,7 +55,7 @@ EquityWatchlist::EquityWatchlist(QWidget* parent) : QWidget(parent) {
 
     add_edit_ = new QLineEdit;
     add_edit_->setObjectName("eqWatchlistAddEdit");
-    add_edit_->setPlaceholderText("Add symbol...");
+    add_edit_->setPlaceholderText(QString::fromUtf8("添加代码..."));
     add_edit_->setFixedHeight(22);
     connect(add_edit_, &QLineEdit::textChanged, this, &EquityWatchlist::on_add_text_changed);
     connect(add_edit_, &QLineEdit::returnPressed, this, &EquityWatchlist::on_add_symbol_entered);
@@ -82,7 +82,7 @@ EquityWatchlist::EquityWatchlist(QWidget* parent) : QWidget(parent) {
     table_ = new QTableWidget;
     table_->setObjectName("eqWatchlistTable");
     table_->setColumnCount(3);
-    table_->setHorizontalHeaderLabels({"SYMBOL", "LTP", "CHG%"});
+    table_->setHorizontalHeaderLabels({QString::fromUtf8("代码"), QString::fromUtf8("最新价"), QString::fromUtf8("涨跌幅")});
     table_->verticalHeader()->setVisible(false);
     table_->setSelectionBehavior(QAbstractItemView::SelectRows);
     table_->setSelectionMode(QAbstractItemView::SingleSelection);

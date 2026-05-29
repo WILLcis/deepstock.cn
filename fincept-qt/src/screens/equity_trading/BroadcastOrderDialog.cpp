@@ -18,7 +18,7 @@ using namespace fincept::trading;
 
 BroadcastOrderDialog::BroadcastOrderDialog(const trading::UnifiedOrder& order, QWidget* parent)
     : QDialog(parent), order_(order) {
-    setWindowTitle("Broadcast Order");
+    setWindowTitle(QString::fromUtf8("批量下单"));
     setMinimumSize(450, 380);
     setStyleSheet(QString("QDialog { background: %1; color: %2; }"
                           "QCheckBox { color: %2; font-size: 12px; spacing: 6px; }"
@@ -39,12 +39,12 @@ void BroadcastOrderDialog::setup_ui() {
     root->setContentsMargins(16, 16, 16, 16);
 
     // Header
-    auto* header = new QLabel("BROADCAST ORDER");
+    auto* header = new QLabel(QString::fromUtf8("批量下单"));
     header->setObjectName("header");
     root->addWidget(header);
 
     // Order summary
-    const QString side_str = order_.side == OrderSide::Buy ? "BUY" : "SELL";
+    const QString side_str = order_.side == OrderSide::Buy ? QString::fromUtf8("买入") : QString::fromUtf8("卖出");
     const QString type_str = order_type_str(order_.order_type);
     auto* info = new QLabel(QString("%1  %2  x%3  %4  @ %5")
                                 .arg(side_str, order_.symbol)
@@ -61,7 +61,7 @@ void BroadcastOrderDialog::setup_ui() {
     root->addWidget(sep);
 
     // Select All
-    select_all_cb_ = new QCheckBox("Select All");
+    select_all_cb_ = new QCheckBox(QString::fromUtf8("全选"));
     select_all_cb_->setStyleSheet(QString("QCheckBox { color: %1; font-weight: 700; }").arg(colors::AMBER()));
     connect(select_all_cb_, &QCheckBox::toggled, this, &BroadcastOrderDialog::on_select_all);
     root->addWidget(select_all_cb_);
@@ -81,7 +81,7 @@ void BroadcastOrderDialog::setup_ui() {
     for (const auto& account : accounts) {
         auto* broker = BrokerRegistry::instance().get(account.broker_id);
         const QString broker_name = broker ? broker->profile().display_name : account.broker_id;
-        const QString mode_tag = account.trading_mode == "live" ? "[LIVE]" : "[PAPER]";
+        const QString mode_tag = account.trading_mode == "live" ? QString::fromUtf8("[实盘]") : QString::fromUtf8("[模拟]");
         const QString text = QString("%1  [%2]  %3").arg(account.display_name, broker_name, mode_tag);
 
         auto* cb = new QCheckBox(text);
@@ -131,13 +131,13 @@ void BroadcastOrderDialog::setup_ui() {
     auto* btn_row = new QHBoxLayout;
     btn_row->addStretch();
 
-    auto* cancel_btn = new QPushButton("CANCEL");
+    auto* cancel_btn = new QPushButton(QString::fromUtf8("取消"));
     cancel_btn->setStyleSheet(QString("QPushButton { background: %1; color: %2; }")
                                   .arg(colors::BG_RAISED(), colors::TEXT_PRIMARY()));
     connect(cancel_btn, &QPushButton::clicked, this, &QDialog::reject);
     btn_row->addWidget(cancel_btn);
 
-    place_btn_ = new QPushButton(QString("PLACE %1").arg(order_.side == OrderSide::Buy ? "BUY" : "SELL"));
+    place_btn_ = new QPushButton(QString("%1").arg(order_.side == OrderSide::Buy ? QString::fromUtf8("买入") : QString::fromUtf8("卖出")));
     place_btn_->setStyleSheet(
         QString("QPushButton { background: %1; color: %2; }")
             .arg(order_.side == OrderSide::Buy ? colors::POSITIVE() : colors::NEGATIVE(), colors::BG_BASE()));
@@ -161,7 +161,7 @@ void BroadcastOrderDialog::on_place_order() {
     }
 
     if (selected.isEmpty()) {
-        status_label_->setText("Select at least one account");
+        status_label_->setText(QString::fromUtf8("请至少选择一个账户"));
         status_label_->setStyleSheet(QString("color: %1;").arg(colors::NEGATIVE()));
         return;
     }
@@ -172,7 +172,7 @@ void BroadcastOrderDialog::on_place_order() {
     for (auto* cb : account_cbs_)
         cb->setEnabled(false);
 
-    status_label_->setText(QString("Placing order across %1 account(s)...").arg(selected.size()));
+    status_label_->setText(QString::fromUtf8("正在向 %1 个账户下单...").arg(selected.size()));
     status_label_->setStyleSheet(QString("color: %1;").arg(colors::AMBER()));
 
     // Run broadcast on background thread (P1: never block UI)

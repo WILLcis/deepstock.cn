@@ -344,8 +344,8 @@ QMenu* ToolBar::build_navigate_menu() {
     nav(mkt, "Relationship Map", "relationship_map");
 
     // Trading & Portfolio
-    auto* trd = add_sub("Trading & Portfolio");
-    nav(trd, "Equity Trading", "equity_trading");
+    auto* trd = add_sub(QString::fromUtf8("交易与组合"));
+    nav(trd, QString::fromUtf8("A股交易"), "equity_trading");
     nav(trd, "Alpha Arena", "alpha_arena");
     nav(trd, "Prediction Markets", "polymarket");
     nav(trd, "Derivatives", "derivatives");
@@ -416,7 +416,7 @@ QMenu* ToolBar::build_view_menu() {
     panels->addAction("Markets", this, [this]() { emit action_triggered("panel_markets"); });
     panels->addSeparator();
     panels->addAction("Crypto Trading", this, [this]() { emit action_triggered("panel_crypto"); });
-    panels->addAction("Equity Trading", this, [this]() { emit action_triggered("panel_equity"); });
+    panels->addAction(QString::fromUtf8("A股交易"), this, [this]() { emit action_triggered("panel_equity"); });
     panels->addAction("Algo Trading", this, [this]() { emit action_triggered("panel_algo"); });
     panels->addSeparator();
     panels->addAction("Equity Research", this, [this]() { emit action_triggered("panel_research"); });
@@ -432,10 +432,10 @@ QMenu* ToolBar::build_view_menu() {
     persp->addSeparator();
 
     // Trading
-    auto* qs_trading = persp->addMenu("Trading");
+    auto* qs_trading = persp->addMenu(QString::fromUtf8("交易"));
     qs_trading->setStyleSheet(popup_ss());
     qs_trading->addAction("Crypto Trading", this, [this]() { emit action_triggered("perspective_trading"); });
-    qs_trading->addAction("Equity Trading", this, [this]() { emit action_triggered("perspective_equity"); });
+    qs_trading->addAction(QString::fromUtf8("A股交易"), this, [this]() { emit action_triggered("perspective_equity"); });
     qs_trading->addAction("Algo Trading", this, [this]() { emit action_triggered("perspective_algo"); });
 
     // Research

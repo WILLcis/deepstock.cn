@@ -8,7 +8,7 @@
 
     { "id": "crypto_center",     "title": "Crypto Center",      "category": "Crypto",      "description": "Connect your Solana wallet, view $FNCPT + SOL balances",   "tags": ["wallet","solana","fncpt","crypto","balance","phantom"] },
     { "id": "crypto_trading",    "title": "Crypto Trading",     "category": "Trading",     "description": "Order entry + real-time book for Kraken / HyperLiquid",    "tags": ["crypto","trading","order"] },
-    { "id": "equity_trading",    "title": "Equity Trading",     "category": "Trading",     "description": "Multi-account equity trading across 16+ brokers",          "tags": ["equity","trading","brokers"] },
+    { "id": "equity_trading",    "title": "A股交易",            "category": "Trading",     "description": "deepstock A股行情、自选、盘口、下单和账户管理",             "tags": ["A股","交易","自选","盘口"] },
     { "id": "algo_trading",      "title": "Algo Trading",       "category": "Trading",     "description": "Strategy runner, order router, and execution analytics",   "tags": ["algo","strategy","execution"] },
     { "id": "backtesting",       "title": "Backtesting",        "category": "Trading",     "description": "Historical strategy simulation and reporting",             "tags": ["backtest","simulation"] },
     { "id": "trade_viz",         "title": "Trade Viz",          "category": "Trading",     "description": "Order and position visualisation on price charts",         "tags": ["trade","visualise","orders"] },

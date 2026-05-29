@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.fincept.terminal</id>
-  <name>Fincept Terminal</name>
-  <summary>Professional financial intelligence terminal</summary>
+  <id>com.deepstock.terminal</id>
+  <name>deepstock</name>
+  <summary>A-share trading terminal demo</summary>
   <metadata_license>FSFAP</metadata_license>
   <project_license>AGPL-3.0-or-later</project_license>
   <description>
     <p>
-      Fincept Terminal is a native C++ desktop financial intelligence terminal
-      featuring real-time market data, AI-powered analytics, multi-broker trading,
-      portfolio management, and 1300+ Python analytics scripts.
+      deepstock is a native C++ desktop A-share trading terminal demo featuring
+      market data, watchlists, depth, order entry, account workflows, and portfolio views.
     </p>
     <ul>
-      <li>Real-time crypto and equity trading (Kraken, HyperLiquid, 18+ brokers)</li>
+      <li>A-share trading workspace with watchlists, depth, quotes, and order entry</li>
       <li>AI chat with multiple LLM providers (OpenAI, Anthropic, Groq, Ollama)</li>
       <li>Python analytics (equity, derivatives, fixed income, quant)</li>
       <li>Voice commands via offline Whisper speech recognition</li>
@@ -20,12 +19,12 @@
       <li>Geopolitics, prediction markets (Polymarket), maritime tracking</li>
     </ul>
   </description>
-  <launchable type="desktop-id">fincept-terminal.desktop</launchable>
+  <launchable type="desktop-id">deepstock.desktop</launchable>
   <url type="homepage">https://github.com/Fincept-Corporation/FinceptTerminal</url>
   <url type="bugtracker">https://github.com/Fincept-Corporation/FinceptTerminal/issues</url>
   <url type="help">https://discord.gg/ae87a8ygbN</url>
   <provides>
-    <binary>FinceptTerminal</binary>
+    <binary>deepstock</binary>
   </provides>
   <releases>
     <release version="4.0.2" date="2026-04-14">

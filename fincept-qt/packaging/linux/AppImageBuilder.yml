@@ -1,4 +1,4 @@
-# AppImageBuilder recipe for Fincept Terminal
+# AppImageBuilder recipe for deepstock
 # Build with: appimage-builder --recipe AppImageBuilder.yml
 # Requires: appimage-builder >= 1.0 (pip install appimage-builder)
 #
@@ -13,11 +13,11 @@ AppDir:
   path: ./AppDir
 
   app_info:
-    id: com.fincept.terminal
-    name: Fincept Terminal
-    icon: fincept-terminal
+    id: com.deepstock.terminal
+    name: deepstock
+    icon: deepstock
     version: !ENV ${FINCEPT_VERSION:-4.0.2}
-    exec: usr/bin/FinceptTerminal
+    exec: usr/bin/deepstock
     exec_args: $@
 
   apt:
@@ -56,6 +56,6 @@ AppDir:
 AppImage:
   arch: x86_64
   comp: xz
-  file_name: FinceptTerminal-!ENV ${FINCEPT_VERSION:-4.0.2}-x86_64.AppImage
+  file_name: deepstock-!ENV ${FINCEPT_VERSION:-4.0.2}-x86_64.AppImage
   sign-key: None
-  update-information: gh-releases-zsync|Fincept-Corporation|FinceptTerminal|latest|FinceptTerminal-*x86_64.AppImage.zsync
+  update-information: gh-releases-zsync|Fincept-Corporation|FinceptTerminal|latest|deepstock-*x86_64.AppImage.zsync

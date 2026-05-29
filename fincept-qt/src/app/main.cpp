@@ -108,6 +108,25 @@ int main(int argc, char* argv[]) {
         // AppPaths::root() must exist before ensure_all() so ProfileManager can
         // write the manifest. Create root now (single mkdir, idempotent).
         QDir().mkpath(fincept::AppPaths::root());
+        // macOS LaunchServices starts .app bundles with "/" as the working
+        // directory. SingleApplication's shared-memory backend creates a small
+        // lock file in the CWD on macOS, so "/" makes app launches exit before
+        // any window appears. Use our writable app-data root before constructing
+        // SingleApplication.
+        const QString app_root = fincept::AppPaths::root();
+        QDir::setCurrent(app_root);
+        // SingleApplication/Qt can leave a zero-byte shared-memory lock file
+        // behind after a crash or forced restart. If that stale file survives,
+        // a new launch may block before our normal logger is available and no
+        // window appears. These names are generated as base64-ish keys and are
+        // safe to discard when they are empty.
+        QDir root_dir(app_root);
+        const auto lock_candidates = root_dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+        for (const QFileInfo& fi : lock_candidates) {
+            const QString name = fi.fileName();
+            if (fi.size() == 0 && name.endsWith(QStringLiteral("==")) && !name.contains(QLatin1Char('.')))
+                QFile::remove(fi.absoluteFilePath());
+        }
     }
     FT_MARK(2);
 
@@ -124,14 +143,14 @@ int main(int argc, char* argv[]) {
 
     // SingleApplication enforces one process per profile.
     // The instance key is scoped to the active profile name, so
-    // "FinceptTerminal --profile work" and "FinceptTerminal --profile personal"
+    // "deepstock --profile work" and "deepstock --profile personal"
     // are treated as two separate primary instances and run simultaneously.
     // allowSecondary=true: secondary instances send "--new-window" and exit.
-    const QString profile_key = QString("FinceptTerminal-%1").arg(fincept::ProfileManager::instance().active());
+    const QString profile_key = QString("deepstock-%1").arg(fincept::ProfileManager::instance().active());
     SingleApplication app(argc, argv, /*allowSecondary=*/true, SingleApplication::Mode::User, 100,
                           profile_key.toUtf8());
-    app.setApplicationName("FinceptTerminal");
-    app.setOrganizationName("Fincept");
+    app.setApplicationName("deepstock");
+    app.setOrganizationName("DeepStock");
 #ifndef FINCEPT_VERSION_STRING
 #    define FINCEPT_VERSION_STRING "0.0.0-dev"
 #endif
@@ -410,7 +429,13 @@ int main(int argc, char* argv[]) {
     // P3.18 — route Qt's own qDebug/qWarning/qCritical messages into our log
     // file so framework/3rd-party warnings are visible in Release builds.
     qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
+        static thread_local bool in_handler = false;
         const char* category = (ctx.category && *ctx.category) ? ctx.category : "Qt";
+        if (in_handler) {
+            fprintf(stderr, "[Qt/%s] %s\n", category, qUtf8Printable(msg));
+            return;
+        }
+        in_handler = true;
         switch (type) {
         case QtDebugMsg:    fincept::Logger::instance().debug(category, msg); break;
         case QtInfoMsg:     fincept::Logger::instance().info(category, msg); break;
@@ -421,6 +446,7 @@ int main(int argc, char* argv[]) {
             fincept::Logger::instance().flush_and_close();
             break;
         }
+        in_handler = false;
     });
     {
         auto& log = fincept::Logger::instance();
@@ -448,7 +474,7 @@ int main(int argc, char* argv[]) {
                 log.set_tag_level(tag, lvl_map.value(level));
         }
     }
-    LOG_INFO("App", "Fincept Terminal v4.0.2 starting...");
+    LOG_INFO("App", "deepstock v4.0.2 starting...");
 
     // Theme is applied after DB is open so saved font/theme are respected from the start.
 
@@ -623,7 +649,7 @@ int main(int argc, char* argv[]) {
         // (e.g. user somehow triggers it twice before the window is hidden).
         auto* setup_screen = new fincept::screens::SetupScreen;
         QPointer<fincept::screens::SetupScreen> screen_guard(setup_screen);
-        setup_screen->setWindowTitle("Fincept Terminal — First-Time Setup");
+        setup_screen->setWindowTitle(QString::fromUtf8("deepstock — 首次配置"));
         setup_screen->resize(800, 600);
         setup_screen->show();
 
@@ -647,16 +673,16 @@ int main(int argc, char* argv[]) {
             bool recovered = false;
             if (auto* recovery = fincept::TerminalShell::instance().crash_recovery();
                 recovery && recovery->needs_recovery()) {
-                fincept::screens::CrashRecoveryDialog dlg(
-                    recovery, fincept::TerminalShell::instance().snapshot_ring());
-                dlg.exec();
-                recovered = dlg.was_restored();
+                LOG_WARN("App", "Crash recovery available, but skipping modal recovery during local startup");
+                recovery->mark_clean_shutdown();
             }
 
             if (!recovered) {
                 auto* window = new fincept::WindowFrame(0); // primary window
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->show();
+                window->raise();
+                window->activateWindow();
             }
 
             // Restore any secondary windows that were open at last shutdown so
@@ -692,6 +718,8 @@ int main(int argc, char* argv[]) {
             // Phase 9 trim: surface Launchpad instead of quitting on last
             // frame close. Closing the Launchpad itself quits.
             QObject::connect(&app, &QApplication::lastWindowClosed, &app, []() {
+                if (qApp && qApp->property("fincept.forceQuit").toBool())
+                    return;
                 fincept::screens::LaunchpadScreen::instance()->surface();
             });
 
@@ -721,10 +749,8 @@ int main(int argc, char* argv[]) {
     bool recovered = false;
     if (auto* recovery = fincept::TerminalShell::instance().crash_recovery();
         recovery && recovery->needs_recovery()) {
-        fincept::screens::CrashRecoveryDialog dlg(
-            recovery, fincept::TerminalShell::instance().snapshot_ring());
-        dlg.exec();
-        recovered = dlg.was_restored();
+        LOG_WARN("App", "Crash recovery available, but skipping modal recovery during local startup");
+        recovery->mark_clean_shutdown();
     }
 
     // Heap-allocate the primary window so we can skip it on a successful
@@ -734,6 +760,8 @@ int main(int argc, char* argv[]) {
         auto* primary = new fincept::WindowFrame(0);
         primary->setAttribute(Qt::WA_DeleteOnClose);
         primary->show();
+        primary->raise();
+        primary->activateWindow();
     }
 
     // Restore any secondary windows that were open at last shutdown. The
@@ -771,6 +799,8 @@ int main(int argc, char* argv[]) {
     // Phase 9 trim: surface Launchpad instead of quitting on last frame
     // close. The launchpad's own close event quits explicitly.
     QObject::connect(&app, &QApplication::lastWindowClosed, &app, []() {
+        if (qApp && qApp->property("fincept.forceQuit").toBool())
+            return;
         fincept::screens::LaunchpadScreen::instance()->surface();
     });
 

@@ -1,26 +1,26 @@
-// installscript.qs -- Fincept Terminal QtIFW component script
+// installscript.qs -- deepstock QtIFW component script
 //
 // Handles:
 //   - Platform shortcuts on install (Start Menu, Desktop, .desktop entry)
 //   - Full user-data cleanup on uninstall (with user confirmation)
 //
 // Data locations cleaned on uninstall:
-//   Windows : %LOCALAPPDATA%\com.fincept.terminal\
+//   Windows : %LOCALAPPDATA%\com.deepstock.terminal\
 //             %LOCALAPPDATA%\Fincept\*                  (legacy)
-//             %LOCALAPPDATA%\FinceptTerminal\*          (legacy)
+//             %LOCALAPPDATA%\deepstock\*          (legacy)
 //             %APPDATA%\Fincept\*                       (QSettings roaming)
 //             HKCU\Software\Fincept                     (registry)
-//             Windows Credential Manager: FinceptTerminal/*
+//             Windows Credential Manager: deepstock/*
 //             %TEMP%\fincept_*
-//   macOS   : ~/Library/Application Support/com.fincept.terminal/
-//             ~/Library/Preferences/com.fincept.FinceptTerminal.plist
+//   macOS   : ~/Library/Application Support/com.deepstock.terminal/
+//             ~/Library/Preferences/com.fincept.deepstock.plist
 //             ~/Library/Preferences/Fincept.plist (if present)
-//             Keychain: com.fincept.terminal service entries
+//             Keychain: com.deepstock.terminal service entries
 //             $TMPDIR/fincept_*, /tmp/fincept_*
-//   Linux   : ~/.local/share/com.fincept.terminal/
+//   Linux   : ~/.local/share/com.deepstock.terminal/
 //             ~/.config/Fincept/
 //             /tmp/fincept_*
-//             ~/.local/share/applications/fincept-terminal.desktop
+//             ~/.local/share/applications/deepstock.desktop
 //
 // Debug: run the maintenance tool with `-v` (or `--verbose`) to see console.log output.
 
@@ -30,7 +30,7 @@
 
 function Component()
 {
-    console.log("[Fincept] Component() constructor — isInstaller=" +
+    console.log("[deepstock] Component() constructor — isInstaller=" +
                 installer.isInstaller() +
                 " isUninstaller=" + installer.isUninstaller() +
                 " isUpdater=" + installer.isUpdater() +
@@ -63,35 +63,35 @@ Component.prototype.createOperations = function()
     if (systemInfo.kernelType === "winnt") {
         // Start Menu shortcut
         component.addOperation("CreateShortcut",
-            targetDir + "/FinceptTerminal.exe",
-            "@StartMenuDir@/Fincept Terminal.lnk",
+            targetDir + "/deepstock.exe",
+            "@StartMenuDir@/deepstock.lnk",
             "workingDirectory=" + targetDir,
-            "iconPath=" + targetDir + "/FinceptTerminal.exe",
+            "iconPath=" + targetDir + "/deepstock.exe",
             "iconId=0",
             "description=Professional Financial Intelligence Terminal");
 
         // Desktop shortcut
         component.addOperation("CreateShortcut",
-            targetDir + "/FinceptTerminal.exe",
-            "@DesktopDir@/Fincept Terminal.lnk",
+            targetDir + "/deepstock.exe",
+            "@DesktopDir@/deepstock.lnk",
             "workingDirectory=" + targetDir,
-            "iconPath=" + targetDir + "/FinceptTerminal.exe",
+            "iconPath=" + targetDir + "/deepstock.exe",
             "iconId=0",
             "description=Professional Financial Intelligence Terminal");
     }
 
     if (systemInfo.kernelType === "linux") {
         component.addOperation("CreateDesktopEntry",
-            "@HomeDir@/.local/share/applications/fincept-terminal.desktop",
+            "@HomeDir@/.local/share/applications/deepstock.desktop",
             "Version=1.0\n" +
             "Type=Application\n" +
-            "Name=Fincept Terminal\n" +
+            "Name=deepstock\n" +
             "GenericName=Financial Intelligence Terminal\n" +
             "Comment=Professional financial data terminal with AI analytics\n" +
-            "Exec=" + targetDir + "/bin/FinceptTerminal %U\n" +
-            "Icon=" + targetDir + "/share/icons/hicolor/256x256/apps/fincept-terminal.png\n" +
+            "Exec=" + targetDir + "/bin/deepstock %U\n" +
+            "Icon=" + targetDir + "/share/icons/hicolor/256x256/apps/deepstock.png\n" +
             "Terminal=false\n" +
-            "StartupWMClass=FinceptTerminal\n" +
+            "StartupWMClass=deepstock\n" +
             "StartupNotify=true\n" +
             "Categories=Finance;Office;Science;\n" +
             "Keywords=finance;trading;stocks;crypto;portfolio;AI;analytics;markets;\n"
@@ -102,7 +102,7 @@ Component.prototype.createOperations = function()
 
 function onInstallationFinished()
 {
-    console.log("[Fincept] Installation finished.");
+    console.log("[deepstock] Installation finished.");
 }
 
 // ---------------------------------------------------------------------------
@@ -111,12 +111,12 @@ function onInstallationFinished()
 
 function onUninstallationStarted()
 {
-    console.log("[Fincept] uninstallationStarted — prompting for user-data removal.");
+    console.log("[deepstock] uninstallationStarted — prompting for user-data removal.");
 
     var answer = QMessageBox.question(
         "fincept.uninstall.data",
-        "Remove Fincept Terminal User Data?",
-        "Do you want to remove all Fincept Terminal user data?\n\n" +
+        "Remove deepstock User Data?",
+        "Do you want to remove all deepstock user data?\n\n" +
         "This includes:\n" +
         "  - Databases (chat history, portfolio, watchlists)\n" +
         "  - Log files\n" +
@@ -132,20 +132,20 @@ function onUninstallationStarted()
     );
 
     if (answer === QMessageBox.Yes) {
-        console.log("[Fincept] User chose Yes — cleaning all user data.");
+        console.log("[deepstock] User chose Yes — cleaning all user data.");
         try {
             cleanUserData();
         } catch (e) {
-            console.log("[Fincept] cleanUserData threw: " + e);
+            console.log("[deepstock] cleanUserData threw: " + e);
         }
     } else {
-        console.log("[Fincept] User chose No — keeping user data.");
+        console.log("[deepstock] User chose No — keeping user data.");
     }
 }
 
 function onUninstallationFinished()
 {
-    console.log("[Fincept] Uninstallation finished.");
+    console.log("[deepstock] Uninstallation finished.");
 }
 
 // ---------------------------------------------------------------------------
@@ -172,29 +172,29 @@ function cleanUserDataWindows()
     var tempDir      = installer.environmentVariable("TEMP");
 
     // 1. Main data root
-    removeDirWindows(localAppData + "/com.fincept.terminal");
+    removeDirWindows(localAppData + "/com.deepstock.terminal");
 
     // 2. Legacy data roots
-    removeDirWindows(localAppData + "/Fincept/FinceptTerminal");
-    removeDirWindows(localAppData + "/FinceptTerminal");
+    removeDirWindows(localAppData + "/Fincept/deepstock");
+    removeDirWindows(localAppData + "/deepstock");
     // Remove the Fincept/ parent if it's now empty
     removeDirIfEmptyWindows(localAppData + "/Fincept");
 
     // 3. Roaming QSettings (INI fallback, rare but possible)
-    removeDirWindows(appData + "/Fincept/FinceptTerminal");
+    removeDirWindows(appData + "/Fincept/deepstock");
     removeDirIfEmptyWindows(appData + "/Fincept");
 
     // 4. Registry — QSettings default format on Windows
-    runAndLog("reg.exe", ["delete", "HKCU\\Software\\Fincept\\FinceptTerminal", "/f"]);
-    runAndLog("reg.exe", ["delete", "HKCU\\Software\\Fincept\\FinceptTerminal-Secure", "/f"]);
+    runAndLog("reg.exe", ["delete", "HKCU\\Software\\Fincept\\deepstock", "/f"]);
+    runAndLog("reg.exe", ["delete", "HKCU\\Software\\Fincept\\deepstock-Secure", "/f"]);
     // Remove parent key last — only succeeds if no other Fincept apps remain.
     runAndLog("reg.exe", ["delete", "HKCU\\Software\\Fincept", "/f"]);
 
-    // 5. Windows Credential Manager entries: FinceptTerminal/*
+    // 5. Windows Credential Manager entries: deepstock/*
     //    cmdkey has no wildcard delete. Enumerate via PowerShell and delete each.
     runAndLog("powershell.exe", [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
-        "$list = cmdkey /list 2>$null | Select-String -Pattern 'FinceptTerminal/'; " +
+        "$list = cmdkey /list 2>$null | Select-String -Pattern 'deepstock/'; " +
         "foreach ($line in $list) { " +
         "  $target = ($line.ToString() -replace '^\\s*Target:\\s*','').Trim(); " +
         "  if ($target) { cmdkey /delete:$target | Out-Null } " +
@@ -228,7 +228,7 @@ function removeDirWindows(pathFwd)
 {
     if (!pathFwd) return;
     if (!installer.fileExists(pathFwd)) {
-        console.log("[Fincept] skip (not present): " + pathFwd);
+        console.log("[deepstock] skip (not present): " + pathFwd);
         return;
     }
     var win = toWin(pathFwd);
@@ -259,24 +259,24 @@ function cleanUserDataMac()
     var home = installer.environmentVariable("HOME");
 
     // 1. Main data root
-    removeDirPosix(home + "/Library/Application Support/com.fincept.terminal");
+    removeDirPosix(home + "/Library/Application Support/com.deepstock.terminal");
 
     // 2. Preferences / plist
-    removeFilePosix(home + "/Library/Preferences/com.fincept.FinceptTerminal.plist");
-    removeFilePosix(home + "/Library/Preferences/Fincept.FinceptTerminal.plist");
-    removeFilePosix(home + "/Library/Preferences/Fincept.FinceptTerminal-Secure.plist");
+    removeFilePosix(home + "/Library/Preferences/com.fincept.deepstock.plist");
+    removeFilePosix(home + "/Library/Preferences/Fincept.deepstock.plist");
+    removeFilePosix(home + "/Library/Preferences/Fincept.deepstock-Secure.plist");
 
     // 3. Caches (Qt/QSettings/logs occasionally land here)
-    removeDirPosix(home + "/Library/Caches/com.fincept.terminal");
+    removeDirPosix(home + "/Library/Caches/com.deepstock.terminal");
     removeDirPosix(home + "/Library/Caches/Fincept");
 
     // 4. Saved application state
-    removeDirPosix(home + "/Library/Saved Application State/com.fincept.terminal.savedState");
+    removeDirPosix(home + "/Library/Saved Application State/com.deepstock.terminal.savedState");
 
-    // 5. Keychain: delete all entries under service "com.fincept.terminal".
+    // 5. Keychain: delete all entries under service "com.deepstock.terminal".
     //    security(1) removes one entry per call — loop until it fails (no more).
     runAndLog("/bin/bash", ["-c",
-        "while /usr/bin/security delete-generic-password -s 'com.fincept.terminal' >/dev/null 2>&1; do :; done; exit 0"
+        "while /usr/bin/security delete-generic-password -s 'com.deepstock.terminal' >/dev/null 2>&1; do :; done; exit 0"
     ]);
 
     // 6. Temp files
@@ -309,21 +309,21 @@ function cleanUserDataLinux()
     if (!xdgCch) xdgCch = home + "/.cache";
 
     // 1. Main data root (respect XDG)
-    removeDirPosix(xdgDat + "/com.fincept.terminal");
-    removeDirPosix(home   + "/.local/share/com.fincept.terminal");
+    removeDirPosix(xdgDat + "/com.deepstock.terminal");
+    removeDirPosix(home   + "/.local/share/com.deepstock.terminal");
 
     // 2. QSettings .conf files
-    removeFilePosix(xdgCfg + "/Fincept/FinceptTerminal.conf");
-    removeFilePosix(xdgCfg + "/Fincept/FinceptTerminal-Secure.conf");
+    removeFilePosix(xdgCfg + "/Fincept/deepstock.conf");
+    removeFilePosix(xdgCfg + "/Fincept/deepstock-Secure.conf");
     removeDirIfEmptyPosix(xdgCfg + "/Fincept");
 
     // 3. Cache dir (if the app used one)
-    removeDirPosix(xdgCch + "/com.fincept.terminal");
+    removeDirPosix(xdgCch + "/com.deepstock.terminal");
     removeDirPosix(xdgCch + "/Fincept");
 
     // 4. Desktop entry (installed via CreateDesktopEntry at install time — IFW's
     //    own UNDO step removes it, but clean up any stale copies just in case).
-    removeFilePosix(home + "/.local/share/applications/fincept-terminal.desktop");
+    removeFilePosix(home + "/.local/share/applications/deepstock.desktop");
 
     // 5. Temp files
     runAndLog("/bin/bash", ["-c",
@@ -347,7 +347,7 @@ function removeDirPosix(path)
 {
     if (!path) return;
     if (!installer.fileExists(path)) {
-        console.log("[Fincept] skip (not present): " + path);
+        console.log("[deepstock] skip (not present): " + path);
         return;
     }
     // Use /bin/rm with -rf so missing paths never error. Shell-wrap so the
@@ -359,7 +359,7 @@ function removeFilePosix(path)
 {
     if (!path) return;
     if (!installer.fileExists(path)) {
-        console.log("[Fincept] skip (not present): " + path);
+        console.log("[deepstock] skip (not present): " + path);
         return;
     }
     runAndLog("/bin/bash", ["-c", "rm -f \"" + shellEscape(path) + "\"; exit 0"]);
@@ -386,9 +386,9 @@ function runAndLog(program, args)
     // installer.execute returns [stdout, exitCode] on success,
     // or [] (empty) if the program failed to launch.
     if (!result || result.length === 0) {
-        console.log("[Fincept] FAILED to launch: " + program + " " + args.join(" "));
+        console.log("[deepstock] FAILED to launch: " + program + " " + args.join(" "));
         return;
     }
     var exitCode = result.length >= 2 ? result[1] : "?";
-    console.log("[Fincept] ran " + program + " (exit=" + exitCode + ")");
+    console.log("[deepstock] ran " + program + " (exit=" + exitCode + ")");
 }

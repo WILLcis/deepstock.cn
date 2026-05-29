@@ -41,7 +41,7 @@ QString DockScreenRouter::title_for_id(const QString& id) {
         {"dashboard", "Dashboard"},
         {"markets", "Markets"},
         {"crypto_trading", "Crypto Trading"},
-        {"equity_trading", "Equity Trading"},
+        {"equity_trading", QString::fromUtf8("A股交易")},
         {"algo_trading", "Algo Trading"},
         {"backtesting", "Backtesting"},
         {"portfolio", "Portfolio"},

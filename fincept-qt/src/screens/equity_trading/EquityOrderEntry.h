@@ -84,9 +84,9 @@ class EquityOrderEntry : public QWidget {
     double current_price_ = 0;
     bool is_paper_ = true;
     bool is_buy_side_ = true;
-    QString current_symbol_ = "RELIANCE";
-    QString current_exchange_ = "NSE";
-    QString current_currency_ = "INR";
+    QString current_symbol_ = "600519";
+    QString current_exchange_ = "SSE";
+    QString current_currency_ = "CNY";
     QString broker_id_;
 
     // Margin fetch debounce timer — fires 500ms after last qty/price change
