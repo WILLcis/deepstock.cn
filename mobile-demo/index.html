@@ -16,6 +16,7 @@
       --red: #d92d20;
       --green: #15803d;
       --amber: #b7791f;
+      --violet: #7c3aed;
       --nav: #101828;
     }
 
@@ -32,6 +33,7 @@
       display: grid;
       place-items: center;
       padding: 24px;
+      overflow-x: hidden;
     }
 
     .stage {
@@ -57,6 +59,7 @@
     .screen {
       height: 100%;
       overflow-y: auto;
+      overflow-x: hidden;
       scrollbar-width: none;
       padding-bottom: 86px;
     }
@@ -146,6 +149,13 @@
     }
 
     .row { justify-content: space-between; gap: 8px; }
+    .row > *,
+    .brand > *,
+    .card-title > *,
+    .order-row > *,
+    .live-room > * {
+      min-width: 0;
+    }
 
     .ticker {
       font-size: 13px;
@@ -294,7 +304,12 @@
 
     .order-row:last-child { border-bottom: 0; }
     .order-row span { color: var(--muted); }
-    .order-row b { font-size: 14px; }
+    .order-row b {
+      font-size: 14px;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .actions {
       display: grid;
@@ -339,6 +354,98 @@
       margin-top: 10px;
       color: #344054;
       font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .advisor-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .advisor-card {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px;
+      background: #fbfcfe;
+      min-width: 0;
+    }
+
+    .advisor-card.teacher {
+      background: #fffaf2;
+      border-color: rgba(183,121,31,.24);
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+
+    .advisor-card.teacher .avatar {
+      background: linear-gradient(135deg, var(--amber), var(--violet));
+    }
+
+    .advisor-name {
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .advisor-meta {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .price-tag {
+      color: var(--red);
+      background: rgba(217,45,32,.08);
+      border: 1px solid rgba(217,45,32,.18);
+      border-radius: 999px;
+      padding: 5px 7px;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .live-room {
+      margin-top: 10px;
+      border: 1px solid rgba(37,99,235,.20);
+      background: rgba(37,99,235,.07);
+      border-radius: 8px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: #344054;
+    }
+
+    .live-room span:first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .notice {
+      margin-top: 10px;
+      color: #667085;
+      font-size: 11px;
       line-height: 1.5;
     }
 
@@ -456,6 +563,7 @@
 
         <nav class="tabs" aria-label="功能分区">
           <div class="tab active">智能体</div>
+          <div class="tab">投顾</div>
           <div class="tab">自选</div>
           <div class="tab">委托</div>
           <div class="tab">风控</div>
@@ -522,14 +630,81 @@
               <div class="down">-0.42%</div>
             </div>
           </article>
+
+          <article class="card">
+            <div class="card-title">
+              <span>智能投顾广场</span>
+              <span class="pill">订阅/直播</span>
+            </div>
+            <p class="agent-copy">
+              AI 投顾提供“投资大师风格”的策略框架，不代表真人本人；真人老师需要认证授权后，才能收费发布短消息股评、开粉丝群和视频直播课。
+            </p>
+            <div class="advisor-grid">
+              <div class="advisor-card" data-note="巴菲特风格智能体：偏长期价值、现金流、护城河与安全边际，只输出框架和风险提示。">
+                <div class="avatar">巴</div>
+                <div>
+                  <div class="advisor-name">巴菲特风格智能体</div>
+                  <div class="advisor-meta">价值投资 · 长期持有 · 风险提示</div>
+                </div>
+                <div class="price-tag">免费</div>
+              </div>
+              <div class="advisor-card" data-note="段永平风格智能体：关注好公司、好价格、商业模式和长期复利，不承诺收益。">
+                <div class="avatar">段</div>
+                <div>
+                  <div class="advisor-name">段永平风格智能体</div>
+                  <div class="advisor-meta">好公司好价格 · 消费科技观察</div>
+                </div>
+                <div class="price-tag">免费</div>
+              </div>
+              <div class="advisor-card" data-note="索罗斯风格智能体：强调宏观、流动性、反身性和趋势风险，适合做市场情景推演。">
+                <div class="avatar">索</div>
+                <div>
+                  <div class="advisor-name">索罗斯风格智能体</div>
+                  <div class="advisor-meta">宏观反身性 · 趋势与风控</div>
+                </div>
+                <div class="price-tag">免费</div>
+              </div>
+              <div class="advisor-card teacher" data-note="杨德龙老师频道示例：需完成真人授权、投顾资质校验、内容审核和付费留痕后才可上线。">
+                <div class="avatar">杨</div>
+                <div>
+                  <div class="advisor-name">杨德龙 · 认证老师示例</div>
+                  <div class="advisor-meta">宏观策略课 · 短消息股评 · 粉丝问答</div>
+                </div>
+                <div class="price-tag">¥99/月</div>
+              </div>
+              <div class="advisor-card teacher" data-note="严为民老师频道示例：可做盘中短评、专属消息版和粉丝聊天室，正式产品需授权入驻。">
+                <div class="avatar">严</div>
+                <div>
+                  <div class="advisor-name">严为民 · 认证老师示例</div>
+                  <div class="advisor-meta">盘中短评 · 消息版 · 直播课</div>
+                </div>
+                <div class="price-tag">¥199/月</div>
+              </div>
+              <div class="advisor-card teacher" data-note="天津股侠频道示例：可提供直播解盘与粉丝群互动，所有观点需要风险揭示和审计记录。">
+                <div class="avatar">津</div>
+                <div>
+                  <div class="advisor-name">天津股侠 · 认证老师示例</div>
+                  <div class="advisor-meta">直播解盘 · 粉丝群 · 课程回放</div>
+                </div>
+                <div class="price-tag">¥29/场</div>
+              </div>
+            </div>
+            <div class="live-room">
+              <span><b>20:00</b> A股收盘复盘直播间 · 可预约</span>
+              <span class="pill">视频课</span>
+            </div>
+            <div class="notice">
+              收费内容需展示资质、授权、风险揭示和历史留痕；AI 风格智能体不得冒充真实人物，也不得承诺收益。
+            </div>
+          </article>
         </section>
       </div>
 
       <nav class="bottom-nav" aria-label="底部导航">
         <div class="nav-item active"><b>⌁</b>智能体</div>
+        <div class="nav-item"><b>◎</b>投顾</div>
         <div class="nav-item"><b>▦</b>行情</div>
         <div class="nav-item"><b>⇄</b>交易</div>
-        <div class="nav-item"><b>≡</b>我的</div>
       </nav>
     </section>
 
@@ -541,7 +716,7 @@
       <div class="feature-list">
         <div class="feature"><b>智能扫描</b><span>自选股、板块和账户仓位合并成一个行动流。</span></div>
         <div class="feature"><b>可解释建议</b><span>每条买卖建议附带行情、资金、风控和有效期。</span></div>
-        <div class="feature"><b>委托草稿</b><span>智能体生成订单，但用户确认后才进入交易。</span></div>
+        <div class="feature"><b>投顾广场</b><span>AI 风格投顾、真人老师、短评、聊天和直播间统一入口。</span></div>
         <div class="feature"><b>风险先行</b><span>把止损、仓位、最大亏损前置到下单前。</span></div>
       </div>
     </aside>
@@ -593,6 +768,13 @@
       agentNote.textContent = "已生成模拟委托：买入 600519.SH，限价 ¥1,678.00，100 股。实盘版本应在这里进入二次确认和券商签名。";
       confirmBtn.textContent = "已生成";
       confirmBtn.style.background = "#15803d";
+    });
+
+    document.querySelectorAll(".advisor-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        agentNote.textContent = card.dataset.note;
+        card.scrollIntoView({ block: "center", behavior: "smooth" });
+      });
     });
   </script>
 </body>
