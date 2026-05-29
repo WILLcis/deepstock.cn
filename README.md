@@ -26,6 +26,10 @@ deepstock.cn 希望探索两类产品形态：
 
 ## 界面预览
 
+### deepstock.cn 酷炫效果图
+
+![deepstock terminal cinematic effect](demo-artifacts/screenshots/deepstock-terminal-cinematic-effect.png)
+
 ### 手机端智能体 Demo
 
 ![deepstock mobile demo](demo-artifacts/screenshots/mobile-demo-view.png)
