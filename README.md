@@ -34,13 +34,9 @@ deepstock.cn 希望探索两类产品形态：
 
 ![deepstock advisor marketplace demo](demo-artifacts/screenshots/mobile-demo-advisors.png)
 
-### 桌面终端素材
+### 桌面端 A股交易终端
 
-![deepstock dashboard](demo-artifacts/screenshots/deepstock-terminal-dashboard.png)
-
-![deepstock equity research](demo-artifacts/screenshots/deepstock-terminal-equity-research.png)
-
-![deepstock portfolio](demo-artifacts/screenshots/deepstock-terminal-portfolio.png)
+![deepstock desktop A-share terminal](demo-artifacts/screenshots/deepstock-desktop-a-share-terminal.png)
 
 ## 快速体验手机端 Demo
 
