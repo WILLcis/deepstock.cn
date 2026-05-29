@@ -76,16 +76,16 @@ ToolBar::ToolBar(QWidget* parent) : QWidget(parent) {
     };
 
     sep();
-    fincept_label_ = mk(" D ");
+    fincept_label_ = mk("DEEPSTOCK ");
     hl->addWidget(fincept_label_);
-    branding_label_ = mk("deepstock");
+    branding_label_ = mk("TERMINAL");
     hl->addWidget(branding_label_);
-    subtitle_label_ = mk(QString::fromUtf8("  |  A股专业交易终端"));
+    subtitle_label_ = mk("  |  A-SHARE PROFESSIONAL RESEARCH DESK");
     hl->addWidget(subtitle_label_);
     hl->addWidget(mk("  "));
     live_dot_ = mk("\xe2\x97\x8f");
     hl->addWidget(live_dot_);
-    live_label_ = mk(QString::fromUtf8(" 行情在线"));
+    live_label_ = mk(" LIVE");
     hl->addWidget(live_label_);
 
     hl->addStretch(1);
@@ -106,22 +106,22 @@ ToolBar::ToolBar(QWidget* parent) : QWidget(parent) {
     sep();
     plan_btn_ = new QPushButton("---");
     plan_btn_->setCursor(Qt::PointingHandCursor);
-    plan_btn_->setToolTip(QString::fromUtf8("查看套餐与订阅"));
+    plan_btn_->setToolTip("View Plans & Pricing");
     plan_btn_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(plan_btn_, &QPushButton::clicked, this, &ToolBar::plan_clicked);
     hl->addWidget(plan_btn_);
     sep();
 
-    chat_mode_btn_ = new QPushButton(QString::fromUtf8("⬡ 智能体"));
+    chat_mode_btn_ = new QPushButton(QString::fromUtf8("⬡ CHAT"));
     chat_mode_btn_->setFixedHeight(20);
     chat_mode_btn_->setCursor(Qt::PointingHandCursor);
-    chat_mode_btn_->setToolTip(QString::fromUtf8("切换到智能体模式 (F9)"));
+    chat_mode_btn_->setToolTip("Switch to Chat Mode (F9)");
     chat_mode_btn_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(chat_mode_btn_, &QPushButton::clicked, this, &ToolBar::chat_mode_toggled);
     hl->addWidget(chat_mode_btn_);
     sep();
 
-    logout_btn_ = new QPushButton(QString::fromUtf8("退出"));
+    logout_btn_ = new QPushButton("LOGOUT");
     logout_btn_->setFixedHeight(20);
     logout_btn_->setCursor(Qt::PointingHandCursor);
     logout_btn_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -162,13 +162,7 @@ void ToolBar::refresh_theme() {
         if (l)
             l->setStyleSheet(QString("color:%1;%2background:transparent;").arg(c, b ? "font-weight:700;" : ""));
     };
-    if (fincept_label_) {
-        fincept_label_->setStyleSheet(QString("color:%1;background:%2;border:1px solid %3;"
-                                              "padding:1px 6px;font-weight:900;border-radius:2px;")
-                                          .arg(colors::TEXT_PRIMARY())
-                                          .arg(colors::ACCENT_BG())
-                                          .arg(colors::AMBER_DIM()));
-    }
+    lbl(fincept_label_, colors::AMBER(), true);
     lbl(branding_label_, colors::TEXT_PRIMARY(), true);
     lbl(subtitle_label_, colors::TEXT_SECONDARY());
     lbl(live_dot_, colors::POSITIVE());
@@ -240,7 +234,7 @@ void ToolBar::apply_responsive_layout(int w) {
 
 void ToolBar::update_clock() {
     auto dt = QDateTime::currentDateTime();
-    clock_label_->setText(dt.toString("yyyy-MM-dd HH:mm:ss"));
+    clock_label_->setText(dt.toString("dd MMM yy").toUpper() + " " + dt.toString("HH:mm:ss"));
 }
 
 void ToolBar::refresh_user_display() {
@@ -270,20 +264,20 @@ void ToolBar::refresh_user_display() {
 }
 
 QMenu* ToolBar::build_file_menu() {
-    auto* m = new QMenu(QString::fromUtf8("文件"), this);
+    auto* m = new QMenu("File", this);
     m->setStyleSheet(popup_ss());
-    m->addAction(QString::fromUtf8("新建窗口"), this, [this]() { emit action_triggered("new_window"); });
+    m->addAction("New Window", this, [this]() { emit action_triggered("new_window"); });
 
     // "Move to Monitor" — rebuilt on every popup so plug/unplug events are
     // reflected without restarting the app. Emits "move_to_monitor:<name>"
     // so WindowFrame can look the screen up by name (indices are unstable).
-    auto* monitors = m->addMenu(QString::fromUtf8("移动到显示器"));
+    auto* monitors = m->addMenu("Move to Monitor");
     monitors->setStyleSheet(popup_ss());
     connect(monitors, &QMenu::aboutToShow, this, [this, monitors]() {
         monitors->clear();
         const auto screens = QGuiApplication::screens();
         if (screens.size() <= 1) {
-            auto* only = monitors->addAction(QString::fromUtf8("（仅一个显示器）"));
+            auto* only = monitors->addAction("(single monitor)");
             only->setEnabled(false);
             return;
         }
@@ -300,22 +294,22 @@ QMenu* ToolBar::build_file_menu() {
     });
 
     m->addSeparator();
-    m->addAction(QString::fromUtf8("新建工作区"), this, [this]() { emit action_triggered("new_workspace"); });
-    m->addAction(QString::fromUtf8("打开工作区"), this, [this]() { emit action_triggered("open_workspace"); });
-    m->addAction(QString::fromUtf8("保存工作区"), this, [this]() { emit action_triggered("save_workspace"); });
-    m->addAction(QString::fromUtf8("工作区另存为"), this, [this]() { emit action_triggered("save_workspace_as"); });
+    m->addAction("New Workspace", this, [this]() { emit action_triggered("new_workspace"); });
+    m->addAction("Open Workspace", this, [this]() { emit action_triggered("open_workspace"); });
+    m->addAction("Save Workspace", this, [this]() { emit action_triggered("save_workspace"); });
+    m->addAction("Save Workspace As", this, [this]() { emit action_triggered("save_workspace_as"); });
     m->addSeparator();
-    m->addAction(QString::fromUtf8("导入工作区"), this, [this]() { emit action_triggered("import_data"); });
-    m->addAction(QString::fromUtf8("导出工作区"), this, [this]() { emit action_triggered("export_data"); });
+    m->addAction("Import Workspace", this, [this]() { emit action_triggered("import_data"); });
+    m->addAction("Export Workspace", this, [this]() { emit action_triggered("export_data"); });
     m->addSeparator();
-    m->addAction(QString::fromUtf8("文件管理"), this, [this]() { emit navigate_to("file_manager"); });
+    m->addAction("File Manager", this, [this]() { emit navigate_to("file_manager"); });
     m->addSeparator();
-    m->addAction(QString::fromUtf8("刷新全部"), this, [this]() { emit action_triggered("refresh"); });
+    m->addAction("Refresh All", this, [this]() { emit action_triggered("refresh"); });
     return m;
 }
 
 QMenu* ToolBar::build_navigate_menu() {
-    auto* m = new QMenu(QString::fromUtf8("导航"), this);
+    auto* m = new QMenu("Navigate", this);
     m->setStyleSheet(QString("QMenu{background:%1;color:%2;border:1px solid %3;padding:2px 0;}"
                              "QMenu::item{padding:3px 20px 3px 10px;}"
                              "QMenu::item:selected{background:%4;}"
@@ -341,9 +335,9 @@ QMenu* ToolBar::build_navigate_menu() {
     };
 
     // Markets & Data
-    auto* mkt = add_sub(QString::fromUtf8("行情与数据"));
-    nav(mkt, QString::fromUtf8("宏观经济"), "economics");
-    nav(mkt, QString::fromUtf8("政府数据"), "gov_data");
+    auto* mkt = add_sub("Markets & Data");
+    nav(mkt, "Economics", "economics");
+    nav(mkt, "GOVT Data", "gov_data");
     nav(mkt, "DBnomics", "dbnomics");
     nav(mkt, QString::fromUtf8("AKShare 数据"), "akshare");
     nav(mkt, QString::fromUtf8("亚洲市场"), "asia_markets");
@@ -362,8 +356,8 @@ QMenu* ToolBar::build_navigate_menu() {
     nav(crypto, QString::fromUtf8("加密资产中心"), "crypto_center");
 
     // Research & Intelligence
-    auto* res = add_sub(QString::fromUtf8("研究与智能"));
-    nav(res, QString::fromUtf8("个股研究"), "equity_research");
+    auto* res = add_sub("Research & Intelligence");
+    nav(res, QString::fromUtf8("A股研究"), "equity_research");
     nav(res, QString::fromUtf8("并购分析"), "ma_analytics");
     nav(res, QString::fromUtf8("另类投资"), "alt_investments");
     nav(res, QString::fromUtf8("地缘政治"), "geopolitics");
@@ -371,8 +365,8 @@ QMenu* ToolBar::build_navigate_menu() {
     nav(res, QString::fromUtf8("波动率曲面"), "surface_analytics");
 
     // Tools
-    auto* tools = add_sub(QString::fromUtf8("工具"));
-    nav(tools, QString::fromUtf8("智能体配置"), "agent_config");
+    auto* tools = add_sub("Tools");
+    nav(tools, "Agent Config", "agent_config");
     nav(tools, "MCP Servers", "mcp_servers");
     nav(tools, QString::fromUtf8("数据映射"), "data_mapping");
     nav(tools, QString::fromUtf8("数据源"), "data_sources");
@@ -394,7 +388,7 @@ QMenu* ToolBar::build_navigate_menu() {
 }
 
 QMenu* ToolBar::build_view_menu() {
-    auto* m = new QMenu(QString::fromUtf8("视图"), this);
+    auto* m = new QMenu("View", this);
     m->setStyleSheet(popup_ss());
     // Component Browser at the top — Bloomberg's discoverability hook.
     m->addAction(QString::fromUtf8("组件浏览器\tCtrl+K"), this,
@@ -481,7 +475,7 @@ QMenu* ToolBar::build_view_menu() {
 }
 
 QMenu* ToolBar::build_help_menu() {
-    auto* m = new QMenu(QString::fromUtf8("帮助"), this);
+    auto* m = new QMenu("Help", this);
     m->setStyleSheet(popup_ss());
     m->addAction(QString::fromUtf8("关于 deepstock"), this, [this]() { emit navigate_to("about"); });
     m->addAction(QString::fromUtf8("帮助中心"), this, [this]() { emit navigate_to("help"); });

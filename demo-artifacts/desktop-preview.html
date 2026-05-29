@@ -55,9 +55,27 @@
       height: 34px;
       padding: 0 12px;
       border-bottom: 1px solid var(--line);
-      background: #091321;
+      background: #050505;
       gap: 12px;
       font-size: 13px;
+    }
+
+    .menu {
+      color: var(--muted);
+      letter-spacing: .4px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .cmd {
+      width: 170px;
+      height: 24px;
+      border: 1px solid #202020;
+      background: #111;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-family: "SFMono-Regular", Consolas, monospace;
     }
 
     .mark {
@@ -71,7 +89,7 @@
       font-weight: 900;
     }
 
-    .brand { font-weight: 900; font-size: 15px; }
+    .brand { font-weight: 900; font-size: 15px; color: var(--amber); letter-spacing: .8px; }
     .subtitle { color: var(--muted); }
     .online { color: var(--green); font-weight: 800; margin-left: 12px; }
     .spacer { flex: 1; }
@@ -80,25 +98,26 @@
 
     .tabs {
       height: 34px;
-      gap: 4px;
-      padding: 0 8px;
+      gap: 18px;
+      padding: 0 16px;
       border-bottom: 1px solid var(--line);
-      background: #07111f;
+      background: #020202;
     }
 
     .tab {
-      height: 30px;
+      height: 34px;
       padding: 7px 12px;
       border: 1px solid transparent;
-      color: #c7d2e2;
+      color: #f8fafc;
       font-size: 13px;
       font-weight: 800;
+      letter-spacing: .6px;
     }
 
     .tab.active {
-      background: var(--amber);
-      color: #111827;
-      border-color: rgba(245,158,11,.55);
+      background: #101010;
+      color: var(--amber);
+      border-color: transparent;
     }
 
     .command {
@@ -350,28 +369,34 @@
 <body>
   <main class="terminal">
     <header class="topbar">
-      <div class="mark">D</div>
-      <div class="brand">deepstock</div>
-      <div class="subtitle">A股专业交易终端</div>
-      <div class="online">● 行情在线</div>
+      <div class="menu">File</div>
+      <div class="menu">Navigate</div>
+      <div class="menu">View</div>
+      <div class="menu">Help</div>
+      <div class="cmd">› Enter Command</div>
+      <div class="brand">DEEPSTOCK</div>
+      <div class="subtitle">TERMINAL</div>
+      <div class="subtitle">| A-SHARE PROFESSIONAL RESEARCH DESK</div>
+      <div class="online">● LIVE</div>
       <div class="spacer"></div>
-      <div class="clock">2026-05-29 09:30:18</div>
+      <div class="clock">29 MAY 26 09:30:18</div>
       <div>william</div>
-      <div class="exit">退出</div>
+      <div class="online">928665 CR</div>
+      <div class="exit">LOGOUT</div>
     </header>
 
     <nav class="tabs">
       <div class="tab active">A股交易</div>
-      <div class="tab">看板</div>
-      <div class="tab">行情</div>
-      <div class="tab">自选</div>
-      <div class="tab">组合</div>
-      <div class="tab">资讯</div>
-      <div class="tab">研究</div>
-      <div class="tab">智能体</div>
+      <div class="tab">DASHBOARD</div>
+      <div class="tab">MARKETS</div>
+      <div class="tab">PORTFOLIO</div>
+      <div class="tab">NEWS</div>
+      <div class="tab">A股研究</div>
+      <div class="tab">AI CHAT</div>
       <div class="tab">投顾社区</div>
-      <div class="tab">回测</div>
-      <div class="tab">算法</div>
+      <div class="tab">BACKTEST</div>
+      <div class="tab">ALGO</div>
+      <div class="tab">SETTINGS</div>
     </nav>
 
     <section class="command">
